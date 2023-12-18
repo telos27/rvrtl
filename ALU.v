@@ -3,6 +3,7 @@
 `include "Adder_32"
 `include "Decoder_5to32.v"
 `include "Shifter_32"
+
 module ALU (rs1, rs2, sub, func3, result, overflow, zeroflag);
     input [31:0]rs1, rs2;
     input sub;

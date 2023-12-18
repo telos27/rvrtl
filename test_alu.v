@@ -1,50 +1,48 @@
 `timescale 1ns/1ps
+`include "Adder_32.v"
 
-module test_cpu() ;
+module test_alu() ;
 
-reg clk , reset ;
+Adder_32 uut(.a(a), .b(b), .sub(zero), .s(s), .overflow(overflow));
 
-reg[7:0] mem[0:1023] ;
+reg [31:0] a ;
+reg [31:0]b ;
+wire [31:0]s ;
+wire overflow ;
+wire zero ;
 
-wire[7:0] b0 , b1 , b2 , b3 , b4 , b5 , b6 , b7 ;
+integer i; // Loop counter
+integer expected_sum ;
+integer expected_overflow ;
 
-assign b0 = mem[0];
-assign b1 = mem[1];
-assign b2 = mem[2];
-assign b3 = mem[3];
-assign b4 = mem[4];
-assign b5 = mem[5];
-assign b6 = mem[6];
-assign b7 = mem[7];
-
-
-
-initial begin clk <=0 ; end
-
-always begin
-    #5 clk <= ~clk ;
-end
-
+assign zero = 0 ;
 
 initial begin
-    reset = 1 ;
-    #20
-    reset = 0 ;
-end
+    $dumpfile ("test_alu.vcd") ;
+    $dumpvars (0 , test_alu) ;
 
-initial begin
-    $readmemh("t1.hex" , mem) ;
-end ;
+    // Randomly test for 1000 iterations
+    for (i = 0; i < 10; i = i + 1) begin
+      // Generate random 32-bit values for a and b
+      a = $random;
+      b = $random;
 
+      #10; // Delay to allow module to settle
 
-initial begin
-    $dumpfile ("test_cpu.vcd") ;
-    $dumpvars (0 , test_cpu) ;
+      // Expected output based on addition operation
+      expected_sum = a + b;
+      expected_overflow = (a > 2**31 - b) || (b > 2**31 - a);
 
-    #1000 ;
-    $display ("done") ;
-    $finish ;
+      #10;
 
-end
+      // Check if adder output matches expected values
+      if (s!==expected_sum) $display("ERROR: Sum mismatch for %dth test case", i);
+      if (overflow!==expected_overflow) $display("ERROR: Overflow mismatch for %dth test case", i);
+
+      // Print test case results
+      $display("Test case %d passed: a=%d, b=%d, s=%d, overflow=%d", i, a, b, s, overflow);
+    end
+    $finish; // Simulation stops after all test cases run
+  end
 
 endmodule
