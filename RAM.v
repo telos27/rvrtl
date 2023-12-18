@@ -12,7 +12,8 @@ module RAM (address, write, clk, clr, datain, dataout);
     always @(posedge clk, write) begin
         if (write) begin
             ramdata[address] <= datain;
-        else
+        end
+        else begin
             dataout <= ramdata[address];
         end
     end
