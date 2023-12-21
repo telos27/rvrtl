@@ -5,7 +5,7 @@ module FastAdder_16 (a, b, cin, s, cout, gin, pin, gout, pout);
     output [15:0] s;
     output cout, gout, pout;
     wire [15:0] g, p;
-    wire [15:0] ctemp;
+    wire [14:0] ctemp;
     
     assign g = a & b;//进位产生
     assign p = a | b;//进位传播
@@ -26,20 +26,20 @@ module FastAdder_16 (a, b, cin, s, cout, gin, pin, gout, pout);
         | (p[4] & p[3] & p[2] & g[1])
         | (p[4] & p[3] & p[2] & p[1] & g[0])
         | (p[4] & p[3] & p[2] & p[1] & p[0] & cin);
-    assign ctemp[5] = g[4] | (p[5] & g[4])
+    assign ctemp[5] = g[5] | (p[5] & g[4])
         | (p[5] & p[4] & g[3])
         | (p[5] & p[4] & p[3] & g[2])
         | (p[5] & p[4] & p[3] & p[2] & g[1])
         | (p[5] & p[4] & p[3] & p[2] & p[1] & g[0])
         | (p[5] & p[4] & p[3] & p[2] & p[1] & p[0] & cin);
-    assign ctemp[6] = g[5] | (p[6] & g[5])
+    assign ctemp[6] = g[6] | (p[6] & g[5])
         | (p[6] & p[5] & g[4])
         | (p[6] & p[5] & p[4] & g[3])
         | (p[6] & p[5] & p[4] & p[3] & g[2])
         | (p[6] & p[5] & p[4] & p[3] & p[2] & g[1])
         | (p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & g[0])
         | (p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & p[0] & cin);
-    assign ctemp[7] = g[6] | (p[7] & g[6])
+    assign ctemp[7] = g[7] | (p[7] & g[6])
         | (p[7] & p[6] & g[5])
         | (p[7] & p[6] & p[5] & g[4])
         | (p[7] & p[6] & p[5] & p[4] & g[3])
@@ -47,7 +47,7 @@ module FastAdder_16 (a, b, cin, s, cout, gin, pin, gout, pout);
         | (p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & g[1])
         | (p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & g[0])
         | (p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & p[0] & cin);
-    assign ctemp[8] = g[7] | (p[7] & g[7])
+    assign ctemp[8] = g[8] | (p[8] & g[7])
         | (p[8] & p[7] & g[6])
         | (p[8] & p[7] & p[6] & g[5])
         | (p[8] & p[7] & p[6] & p[5] & g[4])
@@ -56,7 +56,7 @@ module FastAdder_16 (a, b, cin, s, cout, gin, pin, gout, pout);
         | (p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & g[1])
         | (p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & g[0])
         | (p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & p[0] & cin);
-    assign ctemp[9] = g[8] | (p[8] & g[8])
+    assign ctemp[9] = g[9] | (p[9] & g[8])
         | (p[9] & p[8] & g[7])
         | (p[9] & p[8] & p[7] & g[6])
         | (p[9] & p[8] & p[7] & p[6] & g[5])
@@ -66,7 +66,7 @@ module FastAdder_16 (a, b, cin, s, cout, gin, pin, gout, pout);
         | (p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & g[1])
         | (p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & g[0])
         | (p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & p[0] & cin);
-    assign ctemp[10] = g[9] | (p[9] & g[9])
+    assign ctemp[10] = g[10] | (p[10] & g[9])
         | (p[10] & p[9] & g[8])
         | (p[10] & p[9] & p[8] & g[7])
         | (p[10] & p[9] & p[8] & p[7] & g[6])
@@ -77,7 +77,7 @@ module FastAdder_16 (a, b, cin, s, cout, gin, pin, gout, pout);
         | (p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & g[1])
         | (p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & g[0])
         | (p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & p[0] & cin);
-    assign ctemp[11] = g[10] | (p[10] & g[10])
+    assign ctemp[11] = g[11] | (p[11] & g[10])
         | (p[11] & p[10] & g[9])
         | (p[11] & p[10] & p[9] & g[8])
         | (p[11] & p[10] & p[9] & p[8] & g[7])
@@ -89,7 +89,7 @@ module FastAdder_16 (a, b, cin, s, cout, gin, pin, gout, pout);
         | (p[11] & p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & g[1])
         | (p[11] & p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & g[0])
         | (p[11] & p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & p[0] & cin);
-    assign ctemp[12] = g[11] | (p[11] & g[11])
+    assign ctemp[12] = g[12] | (p[12] & g[11])
         | (p[12] & p[11] & g[10])
         | (p[12] & p[11] & p[10] & g[9])
         | (p[12] & p[11] & p[10] & p[9] & g[8])
@@ -102,7 +102,7 @@ module FastAdder_16 (a, b, cin, s, cout, gin, pin, gout, pout);
         | (p[12] & p[11] & p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & g[1])
         | (p[12] & p[11] & p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & g[0])
         | (p[12] & p[11] & p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & p[0] & cin);
-    assign ctemp[13] = g[12] | (p[12] & g[12])
+    assign ctemp[13] = g[13] | (p[13] & g[12])
         | (p[13] & p[12] & g[11])
         | (p[13] & p[12] & p[11] & g[9])
         | (p[13] & p[12] & p[11] & p[10] & g[9])
@@ -116,7 +116,7 @@ module FastAdder_16 (a, b, cin, s, cout, gin, pin, gout, pout);
         | (p[13] & p[12] & p[11] & p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & g[1])
         | (p[13] & p[12] & p[11] & p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & g[0])
         | (p[13] & p[12] & p[11] & p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & p[0] & cin);
-    assign ctemp[14] = g[13] | (p[13] & g[13])
+    assign ctemp[14] = g[14] | (p[14] & g[13])
         | (p[14] & p[13] & g[12])
         | (p[14] & p[13] & p[12] & g[11])
         | (p[14] & p[13] & p[12] & p[11] & g[9])
@@ -131,7 +131,8 @@ module FastAdder_16 (a, b, cin, s, cout, gin, pin, gout, pout);
         | (p[14] & p[13] & p[12] & p[11] & p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & g[1])
         | (p[14] & p[13] & p[12] & p[11] & p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & g[0])
         | (p[14] & p[13] & p[12] & p[11] & p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & p[0] & cin);
-    assign ctemp[15] = g[14] | (p[14] & g[14])
+    assign cout = g[15] | (p[15] & g[14])
+        | (p[15] & p[14] & g[13])
         | (p[15] & p[14] & p[13] & g[12])
         | (p[15] & p[14] & p[13] & p[12] & g[11])
         | (p[15] & p[14] & p[13] & p[12] & p[11] & g[9])
