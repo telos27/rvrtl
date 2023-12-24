@@ -1,5 +1,6 @@
-module PC (clk, clr, pcout);
+module PC (clk, clr, newpc, pcout);
     input clk, clr;
+    input[31:0] newpc;
     output [31:0] pcout;
     reg [31:0] pc;
 
@@ -8,7 +9,7 @@ module PC (clk, clr, pcout);
     endcase
 
     always @(posedge clk) begin
-        pc = pc + 4;
+        pc = newpc;
         pcout = pc;
     end
 endmodule
