@@ -70,9 +70,9 @@ module Shifter_32 (shift, din, dleftout, drightout);
     assign drightout[22] = dright7[6] | dright8[6];
     assign drightout[23] = dright7[7] | dright8[7];
     //24~31位
-    ShifterL_8 ShifterL_8_5 (.shift(shift[31:24]), .din(din[7:0]), .sin(s[23:17]), .dout(dleft5[7:0]));
-    ShifterL_8 ShifterL_8_1 (.shift(shift[23:16]), .din(din[15:8]), .sin(s[15:9]), .dout(dleft6[7:0]));
-    ShifterL_8 ShifterL_8_2 (.shift(shift[15:8]), .din(din[23:16]), .sin(s[7:1]), .dout(dleft8[7:0]));
+    ShifterL_8 ShifterL_8_3 (.shift(shift[31:24]), .din(din[7:0]), .sin(s[23:17]), .dout(dleft5[7:0]));
+    ShifterL_8 ShifterL_8_4 (.shift(shift[23:16]), .din(din[15:8]), .sin(s[15:9]), .dout(dleft6[7:0]));
+    ShifterL_8 ShifterL_8_5 (.shift(shift[15:8]), .din(din[23:16]), .sin(s[7:1]), .dout(dleft8[7:0]));
     ShifterLR_8 ShifterLR_8_3 (.shift(shift[7:0]), .din(din[31:24]), .dleft(dleft7[7:0]), .dright(dright[24:31]));
     assign dleftout[24] = dleft5[0] | dleft6[0] | dleft8[0] | dleft7[0];
     assign dleftout[25] = dleft5[1] | dleft6[1] | dleft8[1] | dleft7[1];
