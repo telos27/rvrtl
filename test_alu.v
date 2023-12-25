@@ -1,14 +1,14 @@
 `default_nettype none 
 `timescale 1ns/1ps
 `include "Adder_32.v"
-//`include "Shifter_32.v"
+`include "Shifter_32.v"
 `include "Decoder_5to32.v"
 
 module test_alu() ;
 
 Adder_32 adder32(.a(a), .b(b), .sub(zero), .s(s), .overflow(overflow));
 
-Decoder_5to32 decoder(.s(s5), .shift(s32));
+Decoder_5to8 decoder(.s(s5), .shift(s32));
 
 Shifter_32 shifter32(.shift(s32) , .din(a) , .dleftout(shiftleft), .drightout(shiftright));
 

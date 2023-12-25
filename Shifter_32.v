@@ -1,10 +1,12 @@
 //32bit移位模块
 `include "ShifterL_8.v"
 `include "ShifterR_8.v"
+`include "ShifterLR_8.v"
+
 module Shifter_32 (shift, din, dleftout, drightout);
     input [31:0] shift, din;
     output [31:0] dleftout, drightout;
-    wire [7:0] dleft0, dright0, right1, right2, right3;
+    wire [7:0] dright0, dright1, right1, right2, right3;
     wire [7:0] dleft0, dleft1, right4, right5, right6;
     //0~7位
     ShifterLR_8 ShifterLR_8_0 (.shift(shift[7:0]), .din(din[7:0]), .dleft(dleftout[7:0]), .dright(dright0[7:0]));
@@ -51,7 +53,7 @@ module Shifter_32 (shift, din, dleftout, drightout);
     //16~23位
     ShifterL_8 ShifterL_8_1 (.shift(shift[23:16]), .din(din[7:0]), .sin(s[15:9]), .dout(dleft2[7:0]));
     ShifterL_8 ShifterL_8_2 (.shift(shift[15:8]), .din(din[15:8]), .sin(s[7:1]), .dout(dleft3[7:0]));
-    ShifterLR_8 ShifterLR_8_3 (.shift(shift[7:0]), .din(din[23:16]), .dleft(dleft4[7:0]), .dright(dright7[7:0]));
+    ShifterLR_8 ShifterLR_8_2 (.shift(shift[7:0]), .din(din[23:16]), .dleft(dleft4[7:0]), .dright(dright7[7:0]));
     ShifterR_8 ShifterR_8_5 (.shift(shift[15:8]), .din(din[31:24]), .sin(s[7:1]), .dout(dright8[7:0]));
     assign dleftout[16] = dleft2[0] | dleft3[0] | dleft4[0];
     assign dleftout[17] = dleft2[1] | dleft3[1] | dleft4[1];

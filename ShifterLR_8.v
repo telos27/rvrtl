@@ -1,5 +1,5 @@
 //8bit移位模块（对角线）
-module ShifterHalf_8 (shift, din, dleft, dright);
+module ShifterLR_8 (shift, din, dleft, dright);
     input [7:0] shift, din;
     output [7:0] dleft, dright;
     //左移
