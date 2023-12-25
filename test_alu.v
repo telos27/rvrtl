@@ -10,22 +10,23 @@ Adder_32 adder32(.a(a), .b(b), .sub(zero), .s(s), .overflow(overflow));
 
 Decoder_5to32 decoder(.s(s5), .shift(s32));
 
-//Shifter_32 shifter32(.s(s) , .din(a) , .)
+Shifter_32 shifter32(.shift(s32) , .din(a) , .dleftout(shiftleft), .drightout(shiftright));
 
 reg [31:0] a ;
-reg [31:0]b ;
-wire [31:0]s ;
+reg [31:0] b ;
+wire [31:0] s ;
 wire overflow ;
 wire zero ;
 
 reg[4:0] s5 ;
 wire[31:0] s32;
+wire[31:0] shiftleft, shiftright;
 
 integer i; // Loop counter
 integer expected_sum ;
 integer expected_overflow ;
 integer expected_s32 ;
-integer seed = 100;
+integer seed = 100 ;
 
 assign zero = 0 ;
 
