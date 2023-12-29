@@ -8,15 +8,14 @@ module test_alu() ;
 
 Adder_32 adder32(.a(a), .b(b), .sub(zero), .s(s), .overflow(overflow));
 
-Decoder_5to8 decoder(.s(s5), .shift(s32));
-// Decoder_5to8 decoder(.s(b[4:0]), .shift(s32));
+//Decoder_5to8 decoder(.s(b[4:0]), .shift(s32));
 
-Shifter_32 shifter32(.shift(s32) , .din(a) , .dleftout(shiftleft), .drightout(shiftright));
-// Shifter_32 shifter32(.shift(s32) , .din(a) , .dleftout(shiftleft), .drightout(shiftright));
+Shifter_32 shifter32(.shift(s32) , .din(shift_data) , .dleftout(shiftleft), .drightout(shiftright));
 
 reg [31:0] a ;
 reg [31:0] b ;
 wire [31:0] s ;
+wire [31:0] shift_data ;
 wire overflow ;
 wire zero ;
 
@@ -24,7 +23,7 @@ reg[4:0] s5 ;
 wire[31:0] s32;
 wire[31:0] shiftleft, shiftright;
 
-integer i; // Loop counter
+integer i; // 循环计数器
 integer expected_sum ;
 integer expected_overflow ;
 integer expected_s32 ;
@@ -59,16 +58,16 @@ initial begin
       if (shiftleft!==expected_shiftleft) 
         $display("ERROR: shift left mismatch for %dth test case, %x<<%d=%x , expected=%x", i , a , s5 , shiftleft , expected_shiftleft);
     end
-
-    // Randomly test for 1000 iterations
+*/
+    // 随机测试 1000 次
     for (i = 0; i < 10; i = i + 1) begin
-      // Generate random 32-bit values for a and b
+      // 为 a 和 b 生成 32 位随机值
       a = $random(seed);
       b = $random(seed);
+      s32 = 32'hffff_ffff_ffff_ffff
+      #10; // 延时使模块稳定
 
-      #10; // Delay to allow module to settle
-
-      // Expected output based on addition operation
+      // 基于加法运算的预期输出
       expected_sum = a + b;
       expected_overflow = (a+b<a);
 
@@ -77,21 +76,21 @@ initial begin
 
       #10;
 
-      // Check if adder output matches expected values
-      if (s!==expected_sum) $display("ERROR: Sum mismatch for %dth test case, s=%x , expected=%x", i , s , expected_sum);
-      if (overflow!==expected_overflow) $display("ERROR: Overflow mismatch for %dth test case", i);
-/*
-      if (shiftright!==expected_shiftright) 
-        $display("ERROR: shift right mismatch for %dth  case, %x>>%d=%x , expected=%x", i , a , b[4:0] , shiftright , expected_shiftright);
-      if (shiftleft!==expected_shiftleft) 
-        $display("ERROR: shift left mismatch for %dth test case, %x<<%d=%x , expected=%x", i , a , b[4:0] , shiftleft , expected_shiftleft);
-*/
+      // 检查加法器输出是否与预期值一致
+      if (s!==expected_sum) $display("错误：第%d个测试用例的总和不匹配, s = %b , expected = %b", i , s , expected_sum);
+      if (overflow!==expected_overflow) $display("错误：%d测试用例的溢出不匹配", i);
 
-      // Print test case results
-      $display("Test case %d passed: a=%x, b=%x, s=%x, overflow=%d", i, a, b, s, overflow);
-      //$display("sign-extend a: %x[12] -> %x[32]\n" , a[11:0] , {{20{a[11]}},a[11:0]});
+      if (shiftright!==expected_shiftright) 
+        $display("错误：%d测试用例的右移不匹配,\n%b >> %d = %b , expected = %b", i , a , b[4:0] , shiftright , expected_shiftright);
+      if (shiftleft!==expected_shiftleft) 
+        $display("错误：%d测试用例左移不匹配,\n%b << %d = %b , expected = %b", i , a , b[4:0] , shiftleft , expected_shiftleft);
+
+
+      // 打印测试用例结果
+      $display("测试用例%d已通过: a = %x, b = %x, s = %x, overflow = %d", i, a, b, s, overflow);
+      //$display("符号扩展 a: %x[12] -> %x[32]\n" , a[11:0] , {{20{a[11]}},a[11:0]});
     end
-    $finish; // Simulation stops after all test cases run
+    $finish; // 运行所有测试用例后停止模拟
   end
 
 endmodule
