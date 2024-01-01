@@ -1,8 +1,8 @@
 //16位快速加法器
-module FastAdder_16 (a, b, cin, s, cout, gin, pin, gout, pout);
+module FastAdder_16 (a, b, cin, sum, cout, gin, pin, gout, pout);
     input [15:0] a, b;
     input cin, gin, pin;
-    output [15:0] s;
+    output [15:0] sum;
     output cout, gout, pout;
     wire [15:0] g, p;
     wire [14:0] ctemp;
@@ -149,22 +149,22 @@ module FastAdder_16 (a, b, cin, s, cout, gin, pin, gout, pout);
         | (p[15] & p[14] & p[13] & p[12] & p[11] & p[10] & p[9] & p[8] & p[7] & p[6] & p[5] & p[4] & p[3] & p[2] & p[1] & p[0] & cin);
 
     //和输出
-    assign s[0] = a[0] ^ b[0] ^ cin;
-    assign s[1] = a[1] ^ b[1] ^ ctemp[0];
-    assign s[2] = a[2] ^ b[2] ^ ctemp[1];
-    assign s[3] = a[3] ^ b[3] ^ ctemp[2];
-    assign s[4] = a[4] ^ b[4] ^ ctemp[3];
-    assign s[5] = a[5] ^ b[5] ^ ctemp[4];
-    assign s[6] = a[6] ^ b[6] ^ ctemp[5];
-    assign s[7] = a[7] ^ b[7] ^ ctemp[6];
-    assign s[8] = a[8] ^ b[8] ^ ctemp[7];
-    assign s[9] = a[9] ^ b[9] ^ ctemp[8];
-    assign s[10] = a[10] ^ b[10] ^ ctemp[9];
-    assign s[11] = a[11] ^ b[11] ^ ctemp[10];
-    assign s[12] = a[12] ^ b[12] ^ ctemp[11];
-    assign s[13] = a[13] ^ b[13] ^ ctemp[12];
-    assign s[14] = a[14] ^ b[14] ^ ctemp[13];
-    assign s[15] = a[15] ^ b[15] ^ ctemp[14];
+    assign sum[0] = a[0] ^ b[0] ^ cin;
+    assign sum[1] = a[1] ^ b[1] ^ ctemp[0];
+    assign sum[2] = a[2] ^ b[2] ^ ctemp[1];
+    assign sum[3] = a[3] ^ b[3] ^ ctemp[2];
+    assign sum[4] = a[4] ^ b[4] ^ ctemp[3];
+    assign sum[5] = a[5] ^ b[5] ^ ctemp[4];
+    assign sum[6] = a[6] ^ b[6] ^ ctemp[5];
+    assign sum[7] = a[7] ^ b[7] ^ ctemp[6];
+    assign sum[8] = a[8] ^ b[8] ^ ctemp[7];
+    assign sum[9] = a[9] ^ b[9] ^ ctemp[8];
+    assign sum[10] = a[10] ^ b[10] ^ ctemp[9];
+    assign sum[11] = a[11] ^ b[11] ^ ctemp[10];
+    assign sum[12] = a[12] ^ b[12] ^ ctemp[11];
+    assign sum[13] = a[13] ^ b[13] ^ ctemp[12];
+    assign sum[14] = a[14] ^ b[14] ^ ctemp[13];
+    assign sum[15] = a[15] ^ b[15] ^ ctemp[14];
 
     //进位产生、传播信号输出
     assign gout = g[15];

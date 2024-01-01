@@ -1,15 +1,15 @@
-module PC (clk, clr, newpc, pcout);
-    input clk, clr;
+module PC (PCWrite, clr, newpc, pc);
+    input PCWrite, clr;
     input[31:0] newpc;
-    output [31:0] pcout;
+    output [31:0] pc;
+
     reg [31:0] pc;
 
     case (clr)
         1'b1: pc = 31'b0;
     endcase
 
-    always @(posedge clk) begin
+    always @(posedge PCWrite) begin
         pc = newpc;
-        pcout = pc;
     end
 endmodule
