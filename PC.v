@@ -5,11 +5,12 @@ module PC (PCWrite, clr, newpc, pc);
 
     reg [31:0] pc;
 
-    case (clr)
-        1'b1: pc = 31'b0;
-    endcase
+    initial begin
+        if (clr)
+            pc <= 32'b0;
+    end
 
     always @(posedge PCWrite) begin
-        pc = newpc;
+        pc <= newpc;
     end
 endmodule
