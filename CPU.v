@@ -1,28 +1,28 @@
 //CPU
 `include "PC.v"
-`include "Adder_32.v"
-`include "InstructionDecoder.v"
+`include "Immediate.v"
 `include "Control.v"
 `include "Register.v"
 `include "ALU.v"
 `include "RAM.v"
-`include "Mux"
-module CPU (clk,clr);
+//`include "Mux.v"
+
+module CPU (clk, clr);
     input clk, clr;
-    wire [31:0] PC, newPC, PCinc, PCBranch
-    wire [31:0] instruction, immediate, rs1data, rs2data, mux_rs2, ALU_result;
-    wire PCWrite, InstructionRead, Regwrite, Memorywrite, rs2_s, Branch, overflow;
+    wire [31:0] PC, newPC, nextPC, PCBranch;
+    wire [31:0] instruction, immediate, rs1data, rs2data, mux_rs2, dataout, ALU_result;
+    wire PCWrite, InstructionRead, Regwrite, Memorywrite, rs2_s, Branch, overflow, readdata;
 
-    PC PC0 (.PCWrite(PCWrite), .clr(clr), .newpc(newPC), .pcout(PC));
+    PC PC0 (.PCWrite(PCWrite), .clr(clr), .newpc(newPC), .pc(PC));
 
-    Adder_32 AdderPC (.a(PC), .b(3'b100), .sub(), .s(PCinc), .cout(), .zeroflag());
+    Adder_32 AdderPC (.a(PC), .b(32'h4), .sub(), .sum(nextPC), .overflow(), .zeroflag());
 
-    Adder_32 AdderPCBranch (.a(PC), .b(immediate), .sub(), .s(PCBranch), .cout(), .zeroflag());
+    Adder_32 AdderPCBranch (.a(PC), .b(immediate), .sub(), .sum(PCBranch), .overflow(), .zeroflag());
 
-    Mux Mux_PC (.select(Branch), .datain0(PCinc), .datain1(PCBranch), .dataout(newPC));
+    Mux Mux_PC (.select(Branch), .datain0(nextPC), .datain1(PCBranch), .dataout(newPC));
 
-    RAM RAM_Instruction (.address(PC), .write(), .clk(InstructionRead),
-        .clr(clr),.datain(), .dataout(instruction));
+    RAM RAM_Instruction (.address(PC), .clk(clk), .clr(clr), .write(), .read(InstructionRead),
+        .datain(), .dataout(instruction));
 
     Immediate Immediate0 (.instruction(instruction), .immediate(immediate));
 
@@ -37,6 +37,6 @@ module CPU (clk,clr);
     ALU ALU0 (.rs1(rs1data), .rs2(mux_rs2), .sub(instruction[30]), .func3(instruction[14:12]),
         .result(ALU_result));
 
-    RAM RAM_DATA (.address(ALU_result), .write(Memorywrite), .clk(clk), .clr(clr),
-        .datain(result), .dataout(dataout));
+    RAM RAM_DATA (.address(ALU_result), .clk(clk), .clr(clr), .write(Memorywrite), .read(readdata),
+        .datain(ALU_result), .dataout(dataout));
 endmodule

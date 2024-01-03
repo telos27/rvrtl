@@ -1,79 +1,46 @@
 //32bit移位模块
-`include "ShifterL_8.v"
-`include "ShifterR_8.v"
-`include "ShifterLR_8.v"
-
-module Shifter_32 (shift, din, dleftout, drightout);
-    input [31:0] shift, din;
-    output [31:0] dleftout, drightout;
-    wire [7:0] dright0, dright1, dright2, dright3, dright4, dright5, dright6, dright7, dright8;
-    wire [7:0] dleft0, dleft1, dleft2, dleft3, dleft4, dleft5, dleft6, dleft7, dleft8;
+`include "ShifterTriangles_8.v"
+`include "ShifterSquare_8.v"
+module Shifter_32 (shift, datain, dataout);
+    input [31:0] shift, datain;
+    output [31:0] dataout;
+    wire [7:0] shiftdata0, shiftdata1, shiftdata2, shiftdata3, shiftdata4, shiftdata5, shiftdata6, shiftdata7, shiftdata8;
     //0~7位
-    ShifterLR_8 ShifterLR_8_0 (.shift(shift[7:0]), .din(din[7:0]), .dleft(dleftout[7:0]), .dright(dright0[7:0]));
-    ShifterR_8 ShifterR_8_0 (.shift(shift[15:8]), .sin(shift[7:1]), .din(din[15:8]), .dout(dright1[7:0]));
-    ShifterR_8 ShifterR_8_1 (.shift(shift[23:16]), .sin(shift[15:9]), .din(din[23:16]), .dout(dright2[7:0]));
-    ShifterR_8 ShifterR_8_2 (.shift(shift[31:24]), .sin(shift[23:17]), .din(din[31:24]), .dout(dright3[7:0]));
-    assign drightout[0] = dright0[0] | dright1[0] | dright2[0] | dright3[0];
-    assign drightout[1] = dright0[1] | dright1[1] | dright2[1] | dright3[1];
-    assign drightout[2] = dright0[2] | dright1[2] | dright2[2] | dright3[2];
-    assign drightout[3] = dright0[3] | dright1[3] | dright2[3] | dright3[3];
-    assign drightout[4] = dright0[4] | dright1[4] | dright2[4] | dright3[4];
-    assign drightout[5] = dright0[5] | dright1[5] | dright2[5] | dright3[5];
-    assign drightout[6] = dright0[6] | dright1[6] | dright2[6] | dright3[6];
-    assign drightout[7] = dright0[7] | dright1[7] | dright2[7] | dright3[7];
+    ShifterTriangles_8 ShifterTriangles_8_0 (.shift(shift[7:0]), .datain(datain[7:0]), .shiftdata(shiftdata[7:0]));
     //8~15位
-    ShifterL_8 ShifterL_8_0 (.shift(shift[15:8]), .sin(shift[7:1]), .din(din[7:0]), .dout(dleft0[7:0]));
-    ShifterLR_8 ShifterLR_8_1 (.shift(shift[7:0]), .din(din[15:8]), .dleft(dleft1[7:0]), .dright(dright4[7:0]));
-    ShifterR_8 ShifterR_8_3 (.shift(shift[15:8]), .sin(shift[7:1]), .din(din[23:16]), .dout(dright5[7:0]));
-    ShifterR_8 ShifterR_8_4 (.shift(shift[23:16]), .sin(shift[15:9]), .din(din[31:24]), .dout(dright6[7:0]));
-    assign dleftout[8] = dleft0[0] | dleft1[0];
-    assign dleftout[9] = dleft0[1] | dleft1[1];
-    assign dleftout[10] = dleft0[2] | dleft1[2];
-    assign dleftout[11] = dleft0[3] | dleft1[3];
-    assign dleftout[12] = dleft0[4] | dleft1[4];
-    assign dleftout[13] = dleft0[5] | dleft1[5];
-    assign dleftout[14] = dleft0[6] | dleft1[6];
-    assign dleftout[15] = dleft0[7] | dleft1[7];
-    assign drightout[8] = dright4[0] | dright5[0] | dright6[0];
-    assign drightout[9] = dright4[1] | dright5[1] | dright6[1];
-    assign drightout[10] = dright4[2] | dright5[2] | dright6[2];
-    assign drightout[11] = dright4[3] | dright5[3] | dright6[3];
-    assign drightout[12] = dright4[4] | dright5[4] | dright6[4];
-    assign drightout[13] = dright4[5] | dright5[5] | dright6[5];
-    assign drightout[14] = dright4[6] | dright5[6] | dright6[6];
-    assign drightout[15] = dright4[7] | dright5[7] | dright6[7];
+    ShifterSquare_8 ShifterSquare_8_0 (.shift(shift[15:8]), .sin(shift[7:1]), .datain(datain[7:0]), .dout(shiftdata0[7:0]));
+    ShifterTriangles_8 ShifterTriangles_8_1 (.shift(shift[7:0]), .datain(datain[15:8]), .shiftdata(shiftdata1[7:0]));
+    assign dataout[8] = shiftdata0[0] | shiftdata1[0];
+    assign dataout[9] = shiftdata0[1] | shiftdata1[1];
+    assign dataout[10] = shiftdata0[2] | shiftdata1[2];
+    assign dataout[11] = shiftdata0[3] | shiftdata1[3];
+    assign dataout[12] = shiftdata0[4] | shiftdata1[4];
+    assign dataout[13] = shiftdata0[5] | shiftdata1[5];
+    assign dataout[14] = shiftdata0[6] | shiftdata1[6];
+    assign dataout[15] = shiftdata0[7] | shiftdata1[7];
     //16~23位
-    ShifterL_8 ShifterL_8_1 (.shift(shift[23:16]), .sin(shift[15:9]), .din(din[7:0]), .dout(dleft2[7:0]));
-    ShifterL_8 ShifterL_8_2 (.shift(shift[15:8]), .sin(shift[7:1]), .din(din[15:8]), .dout(dleft3[7:0]));
-    ShifterLR_8 ShifterLR_8_2 (.shift(shift[7:0]), .din(din[23:16]), .dleft(dleft4[7:0]), .dright(dright7[7:0]));
-    ShifterR_8 ShifterR_8_5 (.shift(shift[15:8]), .sin(shift[7:1]), .din(din[31:24]), .dout(dright8[7:0]));
-    assign dleftout[16] = dleft2[0] | dleft3[0] | dleft4[0];
-    assign dleftout[17] = dleft2[1] | dleft3[1] | dleft4[1];
-    assign dleftout[18] = dleft2[2] | dleft3[2] | dleft4[2];
-    assign dleftout[19] = dleft2[3] | dleft3[3] | dleft4[3];
-    assign dleftout[20] = dleft2[4] | dleft3[4] | dleft4[4];
-    assign dleftout[21] = dleft2[5] | dleft3[5] | dleft4[5];
-    assign dleftout[22] = dleft2[6] | dleft3[6] | dleft4[6];
-    assign dleftout[23] = dleft2[7] | dleft3[7] | dleft4[7];
-    assign drightout[16] = dright7[0] | dright8[0];
-    assign drightout[17] = dright7[1] | dright8[1];
-    assign drightout[18] = dright7[2] | dright8[2];
-    assign drightout[19] = dright7[3] | dright8[3];
-    assign drightout[20] = dright7[4] | dright8[4];
-    assign drightout[21] = dright7[5] | dright8[5];
-    assign drightout[22] = dright7[6] | dright8[6];
-    assign drightout[23] = dright7[7] | dright8[7];
+    ShifterSquare_8 ShifterSquare_8_1 (.shift(shift[23:16]), .sin(shift[15:9]), .datain(datain[7:0]), .dout(shiftdata2[7:0]));
+    ShifterSquare_8 ShifterSquare_8_2 (.shift(shift[15:8]), .sin(shift[7:1]), .datain(datain[15:8]), .dout(shiftdata3[7:0]));
+    ShifterTriangles_8 ShifterTriangles_8_2 (.shift(shift[7:0]), .datain(datain[23:16]), .shiftdata(shiftdata4[7:0]));
+    assign dataout[16] = shiftdata2[0] | shiftdata3[0] | shiftdata4[0];
+    assign dataout[17] = shiftdata2[1] | shiftdata3[1] | shiftdata4[1];
+    assign dataout[18] = shiftdata2[2] | shiftdata3[2] | shiftdata4[2];
+    assign dataout[19] = shiftdata2[3] | shiftdata3[3] | shiftdata4[3];
+    assign dataout[20] = shiftdata2[4] | shiftdata3[4] | shiftdata4[4];
+    assign dataout[21] = shiftdata2[5] | shiftdata3[5] | shiftdata4[5];
+    assign dataout[22] = shiftdata2[6] | shiftdata3[6] | shiftdata4[6];
+    assign dataout[23] = shiftdata2[7] | shiftdata3[7] | shiftdata4[7];
     //24~31位
-    ShifterL_8 ShifterL_8_3 (.shift(shift[31:24]), .sin(shift[23:17]), .din(din[7:0]), .dout(dleft5[7:0]));
-    ShifterL_8 ShifterL_8_4 (.shift(shift[23:16]), .sin(shift[15:9]), .din(din[15:8]), .dout(dleft6[7:0]));
-    ShifterL_8 ShifterL_8_5 (.shift(shift[15:8]), .sin(shift[7:1]), .din(din[23:16]), .dout(dleft7[7:0]));
-    ShifterLR_8 ShifterLR_8_3 (.shift(shift[7:0]), .din(din[31:24]), .dleft(dleft8[7:0]), .dright(drightout[31:24]));
-    assign dleftout[24] = dleft5[0] | dleft6[0] | dleft7[0] | dleft8[0];
-    assign dleftout[25] = dleft5[1] | dleft6[1] | dleft7[1] | dleft8[1];
-    assign dleftout[26] = dleft5[2] | dleft6[2] | dleft7[2] | dleft8[2];
-    assign dleftout[27] = dleft5[3] | dleft6[3] | dleft7[3] | dleft8[3];
-    assign dleftout[28] = dleft5[4] | dleft6[4] | dleft7[4] | dleft8[4];
-    assign dleftout[29] = dleft5[5] | dleft6[5] | dleft7[5] | dleft8[5];
-    assign dleftout[30] = dleft5[6] | dleft6[6] | dleft7[6] | dleft8[6];
-    assign dleftout[31] = dleft5[7] | dleft6[7] | dleft7[7] | dleft8[7];
+    ShifterSquare_8 ShifterSquare_8_3 (.shift(shift[31:24]), .sin(shift[23:17]), .datain(datain[7:0]), .dout(shiftdata5[7:0]));
+    ShifterSquare_8 ShifterSquare_8_4 (.shift(shift[23:16]), .sin(shift[15:9]), .datain(datain[15:8]), .dout(shiftdata6[7:0]));
+    ShifterSquare_8 ShifterSquare_8_5 (.shift(shift[15:8]), .sin(shift[7:1]), .datain(datain[23:16]), .dout(shiftdata7[7:0]));
+    ShifterTriangles_8 ShifterTriangles_8_3 (.shift(shift[7:0]), .datain(datain[31:24]), .shiftdata(shiftdata8[7:0]));
+    assign dataout[24] = shiftdata5[0] | shiftdata6[0] | shiftdata7[0] | shiftdata8[0];
+    assign dataout[25] = shiftdata5[1] | shiftdata6[1] | shiftdata7[1] | shiftdata8[1];
+    assign dataout[26] = shiftdata5[2] | shiftdata6[2] | shiftdata7[2] | shiftdata8[2];
+    assign dataout[27] = shiftdata5[3] | shiftdata6[3] | shiftdata7[3] | shiftdata8[3];
+    assign dataout[28] = shiftdata5[4] | shiftdata6[4] | shiftdata7[4] | shiftdata8[4];
+    assign dataout[29] = shiftdata5[5] | shiftdata6[5] | shiftdata7[5] | shiftdata8[5];
+    assign dataout[30] = shiftdata5[6] | shiftdata6[6] | shiftdata7[6] | shiftdata8[6];
+    assign dataout[31] = shiftdata5[7] | shiftdata6[7] | shiftdata7[7] | shiftdata8[7];
 endmodule

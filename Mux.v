@@ -1,7 +1,8 @@
+//2-1选择器
 module Mux (select, datain0, datain1, dataout);
     input select;
     input [31:0]datain0, datain1;
-    output [31:0]dataout;
+    output reg [31:0]dataout;
 
     always @(*) begin
         if (select) 

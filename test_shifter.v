@@ -7,14 +7,14 @@ module test_shifter() ;
 
 Decoder_5to8 decoder(.s(b), .shift(s32));
 
-Shifter_32 shifter32(.shift(s32) , .din(shift_data) , .dleftout(shiftleft), .drightout(shiftright));
+Shifter_32 shifter32(.shift(s32) , .datain(shift_data) , dataout(dataout));
 
 reg [31:0] a ;
 reg [4:0] b ;
 reg [31:0] shift_data ;
 
 wire[31:0] s32;
-wire[31:0] shiftleft, shiftright;
+wire[31:0] dataout;
 integer expected_shiftleft , expected_shiftright ;
 
 integer i; // 循环计数器

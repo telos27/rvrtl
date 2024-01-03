@@ -16,5 +16,5 @@ module Adder_32 (a, b, sub, sum, overflow, zeroflag);
             .sum(sum[31:16]), .cout(overflow), .gin(gtemp), .pin(ptemp), .gout(), .pout());
     
     //零标志寄存器
-    assign zeroflag = (s==0)?1'b0:1'b1;
+    assign zeroflag = (sum==0)?1'b0:1'b1;
 endmodule
