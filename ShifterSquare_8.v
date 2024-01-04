@@ -1,5 +1,5 @@
 //8bit左移模块
-module ShifterSquare_8 (shift, shiftup, datain, dataout);
+module ShifterSquare_8 (shift, shiftin, datain, dataout);
     input [7:0] shift, datain;
     input [6:0] shiftin;
     output [7:0] dataout;

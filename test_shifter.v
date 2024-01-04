@@ -1,19 +1,21 @@
 `default_nettype none 
 `timescale 1ns/1ps
+`include "Shift_Signal.v"
 `include "Shifter_32.v"
-`include "Decoder_5to32.v"
 
 module test_shifter() ;
 
-Decoder_5to8 decoder(.s(b), .shift(s32));
+Shift_Signal Shift_Signal (.s(b), .datain(shift_data), .right(right), .sra(sra), .dataout(shift_data0), .shift(s32));
 
-Shifter_32 shifter32(.shift(s32) , .datain(shift_data) , dataout(dataout));
+Shifter_32 shifter32 (.shift(s32) , .datain(shift_data0) , .dataout(dataout));
 
 reg [31:0] a ;
 reg [4:0] b ;
-reg [31:0] shift_data ;
+reg [31:0] shift_data, shiftdata0 ;
+reg right, sra;
 
 wire[31:0] s32;
+
 wire[31:0] dataout;
 integer expected_shiftleft , expected_shiftright ;
 
@@ -26,9 +28,11 @@ initial begin
     // 测试
     for (i = 0; i < 32; i = i + 1) begin
       // 输入到模块的测试信号
-      shift_data = 32'hffff_ffff;
-      a = shift_data;
+      shift_data0 = 32'hffff_ffff;
+      a = shift_data0;
       b = i;
+      right = 0;
+      sra = 1;
       #10; // 延时使模块稳定
 
       // 预期输出
@@ -37,12 +41,12 @@ initial begin
 
       #10;
 
-        if (shiftright!==expected_shiftright) 
-            $display("错误:%d测试用例的右移不匹配,\n%b >> %d = %b , expected = %b", i , a , b[4:0] , shiftright , expected_shiftright);
-        //else $display("%b >> %d = %b , expected = %b", a , b[4:0] , shiftright , expected_shiftright);
-        if (shiftleft!==expected_shiftleft) 
-            $display("错误:%d测试用例左移不匹配,\n%b << %d =\n%b , expected =\n%b", i , a , b[4:0] , shiftleft , expected_shiftleft);
-        //else $display("%b << %d = %b , expected = %b", a , b[4:0] , shiftleft , expected_shiftleft);
+        if ((dataout!==expected_shiftright) && (right==1)) 
+            $display("错误:%d测试用例的右移不匹配,\n%b >> %d = %b , expected = %b", i , a , b[4:0] , dataout , expected_shiftright);
+        //else $display("%b >> %d = %b , expected = %b", a , b[4:0] , dataout , expected_shiftright);
+        if (dataout!==expected_shiftleft & right==0) 
+            $display("错误:%d测试用例左移不匹配,\n%b << %d = %b , expected = %b", i , a , b[4:0] , dataout , expected_shiftleft);
+        //else $display("%b << %d = %b , expected = %b", a , b[4:0] , dataout , expected_shiftleft);
 
       // 打印测试用例结果
       //$display("测试用例%d已通过: a = %x, b = %x, s = %x, overflow = %d", i, a, b, s, overflow);
