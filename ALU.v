@@ -1,7 +1,7 @@
 //算数逻辑运算单元
 `include "Mux.v"
 `include "Adder_32.v"
-`include "Decoder_5to32.v"
+`include "Shift_Signal.v"
 `include "Shifter_32.v"
 module ALU (rs1, rs2, sub, func3, result, zeroflag);
     input [31:0]rs1, rs2;
@@ -16,10 +16,10 @@ module ALU (rs1, rs2, sub, func3, result, zeroflag);
     //加法器
     Adder_32 Adder (.a(rs1), .b(muxrs2), .sub(sub), .sum(sum), .overflow(overflow), .zeroflag(zeroflag));
     //移位模块
-    Decoder_5to32 Decoder_Shift (.s(rs2[4:0]), .shift(shift), .right(func3[2]), .sra(sub));
+    Shift_Signal Shift_Signal (.s(rs2[4:0]), .right(func3[2]), .sra(sub), .bit32(rs1[31]), .shift(shift));
     Shifter_32 Shifter (.shift(shift), .datain(rs1), .dataout(shiftdata));
     //ALU输出
-    always @(sum or shiftleft or sum or overflow or rs1 or rs2 or shiftright) begin
+    always @(sum or shiftdata or sum or overflow or rs1 or rs2) begin
         case (func3)
             3'b000: result = sum;//算数结果
             3'b001, 3'b101: result = shiftdata;//移位结果
