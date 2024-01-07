@@ -8,7 +8,7 @@ module Shift_Signal (s, datain, right, sra, dataout, shift);
     reg [31:0] shifttemp;
     wire sign;
 
-    assign sign = right & sra & datain[31];
+    assign sign = sra & datain[31];
 
     always @(*) begin
     case (s)
@@ -55,48 +55,13 @@ module Shift_Signal (s, datain, right, sra, dataout, shift);
     endcase
     end
     //移位信号输出
+    integer i;
     always @(*) begin
         if (right) begin
-            //0~3
-            shift[31] = shifttemp[0]; dataout[0] = datain[31];
-            shift[30] = shifttemp[1]; dataout[1] = datain[30];
-            shift[29] = shifttemp[2]; dataout[2] = datain[29];
-            shift[28] = shifttemp[3]; dataout[3] = datain[28];
-            //4~7
-            shift[27] = shifttemp[4]; dataout[4] = datain[27];
-            shift[26] = shifttemp[5]; dataout[5] = datain[26];
-            shift[25] = shifttemp[6]; dataout[6] = datain[25];
-            shift[24] = shifttemp[7]; dataout[7] = datain[24];
-            //8~11
-            shift[23] = shifttemp[8]; dataout[8] = datain[23];
-            shift[22] = shifttemp[9]; dataout[9] = datain[22];
-            shift[21] = shifttemp[10]; dataout[10] = datain[21];
-            shift[20] = shifttemp[11]; dataout[11] = datain[20];
-            //12~15
-            shift[19] = shifttemp[12]; dataout[12] = datain[19];
-            shift[18] = shifttemp[13]; dataout[13] = datain[18];
-            shift[17] = shifttemp[14]; dataout[14] = datain[17];
-            shift[16] = shifttemp[15]; dataout[15] = datain[16];
-            //16~19
-            shift[15] = shifttemp[16]; dataout[16] = datain[15];
-            shift[14] = shifttemp[17]; dataout[17] = datain[14];
-            shift[13] = shifttemp[18]; dataout[18] = datain[13];
-            shift[12] = shifttemp[19]; dataout[19] = datain[12];
-            //20~23
-            shift[11] = shifttemp[20]; dataout[20] = datain[11];
-            shift[10] = shifttemp[21]; dataout[21] = datain[10];
-            shift[9] = shifttemp[22]; dataout[22] = datain[9];
-            shift[8] = shifttemp[23]; dataout[23] = datain[8];
-            //24~27
-            shift[7] = shifttemp[24]; dataout[24] = datain[7];
-            shift[6] = shifttemp[25]; dataout[25] = datain[6];
-            shift[5] = shifttemp[26]; dataout[26] = datain[5];
-            shift[4] = shifttemp[27]; dataout[27] = datain[4];
-            //28~31
-            shift[3] = shifttemp[28]; dataout[28] = datain[3];
-            shift[2] = shifttemp[29]; dataout[29] = datain[2];
-            shift[1] = shifttemp[30]; dataout[30] = datain[1];
-            shift[0] = shifttemp[31]; dataout[31] = datain[0];
+            for (i = 0; i < 32 ; i +=1) begin
+                shift[i] <= shifttemp[31-i];
+                dataout[i] <= datain[31-i];
+            end
         end
         else begin
             shift = shifttemp;
