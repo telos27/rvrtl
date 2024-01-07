@@ -11,12 +11,12 @@ Shifter_32 shifter32 (.shift(s32) , .datain(shift_data0) , .dataout(dataout));
 
 reg [31:0] a ;
 reg [4:0] b ;
-reg [31:0] shift_data, shiftdata0 ;
+reg [31:0] shift_data;
 reg right, sra;
 
 wire[31:0] s32;
 
-wire[31:0] dataout;
+wire[31:0] dataout, shift_data0;
 integer expected_shiftleft , expected_shiftright ;
 
 integer i; // 循环计数器
@@ -28,11 +28,11 @@ initial begin
     // 测试
     for (i = 0; i < 32; i = i + 1) begin
       // 输入到模块的测试信号
-      shift_data0 = 32'hffff_ffff;
-      a = shift_data0;
+      shift_data = 32'hffff_ffff;
+      a = shift_data;
       b = i;
-      right = 0;
-      sra = 1;
+      right = 1;
+      sra = 0;
       #10; // 延时使模块稳定
 
       // 预期输出
