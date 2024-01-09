@@ -2,7 +2,7 @@
 module ShifterTriangles_8 (shift, datain, dataout);
     input [7:0] shift, datain;
     output [7:0] dataout;
-    
+
     assign dataout[7] = (shift[7] & datain[0]) | (shift[6] & datain[1]) | (shift[5] & datain[2]) | (shift[4] & datain[3])
                     | (shift[3] & datain[4]) | (shift[2] & datain[5]) | (shift[1] & datain[6]) | (shift[0] & datain[7]);
     assign dataout[6] = (shift[6] & datain[0]) | (shift[5] & datain[1]) | (shift[4] & datain[2]) | (shift[3] & datain[3])
