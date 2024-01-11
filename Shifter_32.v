@@ -46,16 +46,4 @@ module Shifter_32 (shift, right, datain, dataout);
     assign datatemp[29] = shiftdata5[5] | shiftdata6[5] | shiftdata7[5] | shiftdata8[5];
     assign datatemp[30] = shiftdata5[6] | shiftdata6[6] | shiftdata7[6] | shiftdata8[6];
     assign datatemp[31] = shiftdata5[7] | shiftdata6[7] | shiftdata7[7] | shiftdata8[7];
-
-    always @(*) begin
-        if (right) begin
-            for (i = 0; i < 32; i += 1) begin
-                dataout[i] <= datatemp[31-i];
-            end
-        end
-        else begin
-            dataout <= datatemp;
-        end        
-    end
-
 endmodule
