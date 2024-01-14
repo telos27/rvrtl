@@ -67,9 +67,9 @@ module Control (clk, opcode, compare, PCWrite, InstructionRead, Regwrite, Memory
                     0: Branch <= compare[0];//相等
                     1: Branch <= ~compare[0];//不等
                     4: Branch <= compare[1];//小于
-                    5: Branch <= compare[1] & compare[0];//小于等于
+                    5: Branch <= ~compare[1];//大于等于
                     6: Branch <= compare[2];//无符号小于
-                    7: Branch <= compare[2] & compare[0];//无符号小于等于
+                    7: Branch <= ~compare[2];//无符号大于等于
                 endcase
             end
         endcase

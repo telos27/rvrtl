@@ -5,7 +5,7 @@
 
 module test_shifter() ;
 
-Shift_Signal Shift_Signal (.s(b), .datain(shift_data), .right(right), .sra(sra), .dataout(shift_data0), .shift(s32));
+Shift_Signal Shift_Signal (.shift(b), .shift(s32));
 
 Shifter_32 shifter32 (.shift(s32), .right(right), .datain(shift_data0) , .dataout(dataout));
 
