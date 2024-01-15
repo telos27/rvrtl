@@ -1,10 +1,10 @@
 module SignExtender (shift5, rsa, sign, signextend);
-    input [4:0] signextend5;
+    input [4:0] shift5;
     input rsa, sign;
-    output [31:0] signextend;
+    output reg [31:0] signextend;
 
-    always @(shift5 or sra or sign) begin
-        if (rsa & sign) begin
+    always @(shift5 or sign or rsa) begin
+        if (sign && rsa) begin
             case (shift5)
                 //0~3
                 5'b00000: signextend <= 32'h0000_0000;
