@@ -12,6 +12,7 @@ module ALU (rs1, rs2, sub, func3, result, compare);
     output reg [31:0]result;
     output reg [2:0]compare;
     wire [31:0]rs2bar, muxrs2, sum, muxshift, shift, shiftdatatemp, shiftdata, shiftright, signextend;
+    wire overflow, zeroflag;
     //rs2取反
     assign rs2bar = ~rs2;
     Mux Mux_b (.select(sub), .datain0(rs2), .datain1(rs2bar), .dataout(muxrs2));
@@ -36,6 +37,6 @@ module ALU (rs1, rs2, sub, func3, result, compare);
             3'b111: result <= rs1 & rs2;//逻辑与
         endcase
         //rs1和rs2比较大小，设置标志位
-        compare <= {overflow, sum[31], zeroflag};//零标志位、有符号溢出、无符号溢出
+        compare = {zeroflag, sum[31], overflow};//零标志位、有符号溢出、无符号溢出
     end
 endmodule
