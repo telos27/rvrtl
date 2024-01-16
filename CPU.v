@@ -5,7 +5,6 @@
 `include "Register.v"
 `include "ALU.v"
 `include "RAM.v"
-//`include "Mux.v"
 
 module CPU (clk, clr);
     input clk, clr;

@@ -1,9 +1,9 @@
 //控制模块
-module Control (clk, opcode, compare, PCWrite, InstructionRead, Regwrite, Memorywrite, Mux_ALU_rs2, Branch);
+module Control (clk, opcode, func3, compare, PCWrite, InstructionRead, Regwrite, Memorywrite, Mux_ALU_rs2, Branch);
     input clk;
     input [6:0] opcode;
-    input [2:0] compare;
-    output PCWrite, InstructionRead, Regwrite, Memorywrite, Mux_ALU_rs2, Branch;
+    input [2:0] func3, compare;
+    output reg PCWrite, InstructionRead, Regwrite, Memorywrite, Mux_ALU_rs2, Branch;
 
     reg state;
 
@@ -13,9 +13,6 @@ module Control (clk, opcode, compare, PCWrite, InstructionRead, Regwrite, Memory
             1: state <= 0 ;
         endcase
     end
-
-    assign InstructionRead = (state==0)?0:1;
-    assign PCWrite = (state==1)?0:1;
 
     //根据操作码设置各部件控制信号
     always @(posedge clk)
@@ -57,8 +54,9 @@ module Control (clk, opcode, compare, PCWrite, InstructionRead, Regwrite, Memory
                 Mux_ALU_rs2 <= 0;
                 Branch <= 0;
             end
+            //B-type，Branch，条件分支，更新PC
             7'b1100011:begin
-                PCWrite <= 0;
+                PCWrite <= 1;
                 InstructionRead <= 0;
                 Regwrite <= 1;
                 Memorywrite <= 1;
