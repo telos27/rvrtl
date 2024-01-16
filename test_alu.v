@@ -10,7 +10,7 @@ module test_alu();
   reg [31:0] b;
   reg sub;
   reg [2:0] func3;
-  wire [31:0] result ;
+  wire [31:0] result;
   wire [2:0] flags;
 
   integer i , j ; // 循环计数器
