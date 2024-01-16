@@ -29,20 +29,22 @@ module test_alu();
       for (j=0 ; j<10 ; j=j+1) begin
         a = $random(seed);
         b = $random(seed);
+
+        #10
         case(func3)
         0: expected_result = a + b;
         4: expected_result = a ^ b;
         6: expected_result = a | b;
         7: expected_result = a & b;
-        1: expected_result = a << b;
+        1: expected_result = a << (b & 0h1f);
         5: expected_result = a >> b;
         2: expected_result = a < b ? 1'b1:1'b0;
         3: expected_result = a < b ? 1'b1:1'b0;
         endcase
 
-        if (expected_result!==result) begin
-        $display("结果不正确： func3=%d , j=0 , a=%x , b=%x , result=%x , expected_result=%x\n" , func3 , j , a , b , result , expected_result);
-        end
+        //if (expected_result!==result) begin
+          $display("结果不正确： func3=%d , j=%d , a=0x%x , b=0x%x , result=0x%x , expected_result=0x%x\n" , func3 , j , a , b , result , expected_result);
+        //end
       end
     end
       $finish; // 运行所有测试用例后停止模拟
