@@ -26,7 +26,7 @@ module CPU (clk, clr);
 
     Immediate Immediate0 (.instruction(instruction), .immediate(immediate));
 
-    Control Control0 (.opcode(instruction[6:0]), .PCWrite(PCWrite), .InstructionRead(InstructionRead),
+    Control Control0 (.clk(clk), .opcode(instruction[6:0]), .PCWrite(PCWrite), .InstructionRead(InstructionRead),
         .compare(compare), .Regwrite(Regwrite), .Memorywrite(Memorywrite), .Mux_ALU_rs2(rs2_s), .Branch(Branch));
 
     Register Register0 (.clk(clk), .write(Regwrite), .rd(instruction[11:7]), .rs1(instruction[19:15]),

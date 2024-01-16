@@ -7,6 +7,8 @@ module Control (clk, opcode, func3, compare, PCWrite, InstructionRead, Regwrite,
 
     reg state;
 
+    initial state <=0 ;
+
     always @(posedge clk) begin
         case (state)
             0: state <= 1 ;
