@@ -11,7 +11,8 @@ module ALU (rs1, rs2, sub, func3, result, compare);
     input [2:0]func3;
     output reg [31:0]result;
     output reg [2:0]compare;
-    wire [31:0]rs2bar, muxrs2, sum, muxshift, shift, shiftdatatemp, shiftdata, shiftright, signextend;
+    wire [31:0]rs2bar, muxrs2, sum, muxshift, shift;
+    wire [31:0]shiftdatatemp, shiftdataout, shiftright, signextend;
     wire overflow, zeroflag;
     //rs2取反
     assign rs2bar = ~rs2;
@@ -21,20 +22,20 @@ module ALU (rs1, rs2, sub, func3, result, compare);
     //移位模块
     Shift_Signal Shift_Signal (.shift5(rs2[4:0]), .shift32(shift));
     Reverser ReverserIn (.right(func3[2]), .datain(rs1), .dataout(shiftdatatemp));
-    Shifter_32 Shifter (.shift(shift), .datain(shiftdatatemp), .dataout(shiftdata));
-    Reverser ReverserOut (.right(func3[2]), .datain(shiftdata), .dataout(shiftright));
+    Shifter_32 Shifter (.shift(shift), .datain(shiftdatatemp), .dataout(shiftdataout));
+    Reverser ReverserOut (.right(func3[2]), .datain(shiftdataout), .dataout(shiftright));
     SignExtender SignExtender (.shift5(rs2[4:0]), .rsa(sub), .sign(rs1[31]), .signextend(signextend));
     //ALU输出
     always @(*) begin
         case (func3)
-            3'b000: result <= sum;//算数结果
-            3'b001: result <= shiftdata;//左移
-            3'b010: result <= sum[31];//小于置1
-            3'b011: result <= overflow;//无符号小于置1
-            3'b100: result <= rs1 ^ rs2;//逻辑异或
-            3'b101: result <= shiftright | signextend;//右移
-            3'b110: result <= rs1 | rs2;//逻辑或
-            3'b111: result <= rs1 & rs2;//逻辑与
+            0: result <= sum;//算数结果
+            1: result <= shiftdataout;//左移
+            2: result <= sum[31];//小于置1
+            3: result <= overflow;//无符号小于置1
+            4: result <= rs1 ^ rs2;//逻辑异或
+            5: result <= shiftright | signextend;//右移
+            6: result <= rs1 | rs2;//逻辑或
+            7: result <= rs1 & rs2;//逻辑与
         endcase
         //rs1和rs2比较大小，设置标志位
         compare = {zeroflag, sum[31], overflow};//零标志位、有符号溢出、无符号溢出

@@ -2,12 +2,14 @@
 `timescale 1ns/1ps
 `include "Shift_Signal.v"
 `include "Shifter_32.v"
+`include "Reverser.v"
 
 module test_shifter() ;
 
-Shift_Signal Shift_Signal (.shift(b), .shift(s32));
-
-Shifter_32 shifter32 (.shift(s32), .right(right), .datain(shift_data0) , .dataout(dataout));
+Shift_Signal Shift_Signal (.shift5(b), .shift32(s32));
+Reverser ReverserIn (.right(right), .datain(shift_data0), .dataout(shiftdatatemp));
+Shifter_32 shifter32 (.shift(s32), .datain(shiftdatatemp) , .dataout(dataout));
+Reverser ReverserOut (.right(right), .datain(dataout), .dataout(shiftright));
 
 reg [31:0] a ;
 reg [4:0] b ;
@@ -16,7 +18,7 @@ reg right, sra;
 
 wire[31:0] s32;
 
-wire[31:0] dataout, shift_data0;
+wire[31:0] dataout, shift_data0, shiftdatatemp, shiftright;
 integer expected_shiftleft , expected_shiftright ;
 
 integer i; // 循环计数器
@@ -41,7 +43,7 @@ initial begin
 
       #10;
 
-        if ((dataout!==expected_shiftright) && (right==1)) 
+        if ((shiftright!==expected_shiftright) && (right==1)) 
             $display("错误:%d测试用例的右移不匹配,\n%b >> %d = %b , expected = %b", i , a , b[4:0] , dataout , expected_shiftright);
         else $display("%b >> %d = %b , expected = %b", a , b[4:0] , dataout , expected_shiftright);
         if (dataout!==expected_shiftleft & right==0) 
