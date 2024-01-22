@@ -5,8 +5,7 @@ module Adder_32 (a, b, sub, sum, overflow, zeroflag);
     input [31:0] a, b;
     input sub;
     output [31:0] sum;
-    output overflow;
-    output zeroflag;
+    output overflow, zeroflag;
     wire gtemp, ptemp, ctemp;
 
     //2个16位快速加法器串联
