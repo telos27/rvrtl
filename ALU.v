@@ -31,13 +31,13 @@ module ALU (rs1, rs2, sub, func3, result, compare);
             0: result <= sum;//算数结果
             1: result <= shiftdataout;//左移
             2: result <= sum[31];//小于置1
-            3: result <= overflow;//无符号小于置1
+            3: result <= !overflow;//无符号小于置1
             4: result <= rs1 ^ rs2;//逻辑异或
             5: result <= shiftright | signextend;//右移
             6: result <= rs1 | rs2;//逻辑或
             7: result <= rs1 & rs2;//逻辑与
         endcase
         //rs1和rs2比较大小，设置标志位
-        compare = {zeroflag, sum[31], overflow};//零标志位、有符号溢出、无符号溢出
+        compare = {zeroflag, sum[31], !overflow};//零标志位、有符号溢出、无符号溢出
     end
 endmodule
