@@ -25,20 +25,20 @@ module test_alu();
 
     for (i=0 ; i<8 ; i=i+1) begin
       func3 = i;
-      sub = 1;
-      for (j=0 ; j<2 ; j=j+1) begin
+      sub = 0;
+      for (j=0 ; j<10 ; j=j+1) begin
         a = $random(seed);
         b = $random(seed);
 
         #10
         case(func3)
-        0: expected_result = a - b;
+        0: expected_result = sub ? a - b : a + b;
         4: expected_result = a ^ b;
         6: expected_result = a | b;
         7: expected_result = a & b;
         1: expected_result = a << b[4:0];
         5: expected_result = a >> b[4:0];
-        2: expected_result = a < b ? 1'b1:1'b0;
+        2: expected_result = $signed(a) < $signed(b) ? 1'b1:1'b0;
         3: expected_result = a < b ? 1'b1:1'b0;
         endcase
 
