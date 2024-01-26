@@ -1,9 +1,7 @@
 module PC (PCWrite, clr, newpc, pc);
     input PCWrite, clr;
-    input[31:0] newpc;
-    output [31:0] pc;
-
-    reg [31:0] pc;
+    input [31:0] newpc;
+    output reg [31:0] pc;
 
     initial begin
         if (clr)
