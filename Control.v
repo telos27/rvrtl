@@ -37,11 +37,11 @@ module Control (clk, clr opcode, func3, compare,
     always @(posedge clk) begin
         case (opcode)
             0110011:begin
-                PCWrite <= 0;
-                IorD <= 0;
+                PCWrite <= 0 & (state == 0);
+                IorD <= 0 & (state == 1);
                 MemoryWrite <= 0;
                 MemoryRead <= 1;
-                IRWrite <= 0;
+                IRWrite <= 0 & (state == 2);
                 S_rs1 <= 0;
                 S_rs2 <= 0;
                 S_func3 <= 1;
@@ -49,11 +49,11 @@ module Control (clk, clr opcode, func3, compare,
                 Branch <=0;
             end
             0010011:begin
-                PCWrite <= 0;
-                IorD <= 0;
+                PCWrite <= 0 & (state == 0);
+                IorD <= 0 & (state == 1);
                 MemoryWrite <= 0;
                 MemoryRead <= 1;
-                IRWrite <= 0;
+                IRWrite <= 0 & (state == 2);
                 S_rs1 <= 0;
                 S_rs2 <= 2;
                 S_func3 <= 1;
