@@ -21,7 +21,7 @@ module CPU (clk, clr);
 
     PC PC0 (.PCWrite(PCWrite), .clr(clr), .newpc(newPC), .pc(PC));
 
-    Mux Mux_MemoryAddress (.select(IorD), .datain0(PC), .datain1(ALUOut), .dataout(memoryaddress));
+    Mux_2 Mux_MemoryAddress (.select(IorD), .datain0(PC), .datain1(ALUOut), .dataout(memoryaddress));
 
     RAM Memory (.address(memoryaddress), .clk(clk), .clr(clr), .write(MemoryWrite), .read(MemoryRead),
         .datain(rs2Reg), .dataout(memorydata));
@@ -33,7 +33,7 @@ module CPU (clk, clr);
         end
     end
 
-    Mux Mux_MemtoReg (.select(MemtoReg), .datain0(ALUOutReg), .datain1(MemorydataReg), .dataout(mux_writereg));
+    Mux_2 Mux_MemtoReg (.select(MemtoReg), .datain0(ALUOutReg), .datain1(MemorydataReg), .dataout(mux_writereg));
     Register Register0 (.clk(clk), .write(Regwrite), .rd(MemorydataReg[11:7]), .rs1(MemorydataReg[19:15]),
         .rs2(MemorydataReg[24:20]), .rddata(mux_writereg), .rs1data(rs1data), .rs2data(rs2data));
     Immediate Immediate0 (.instruction(InstReg), .immediate(immediate));
@@ -44,10 +44,10 @@ module CPU (clk, clr);
     end
 
     Mux_2 Mux_ALU_rs1 (.select(S_rs1), .datain0(PC), .datain1(rs1Reg), .dataout(mux_rs1));
-    Mux_4 Mux_ALU_rs2 (.select(S_rs2), .datain0(rs2Reg), .datain1(32'h4), .datain3(immediate), .datain4(),
+    Mux_4 Mux_ALU_rs2 (.select(S_rs2), .datain0(rs2Reg), .datain1(32'h4), .datain2(immediate), 
         .dataout(mux_rs2));
-    Mux_2 Mux_func3 (.select(S_func3), .datain0(3'b0), .datain1(instruction[14:12]), .dataout(mux_func3));
-    Mux_2 Mux_sub (.select(S_sub), .datain0(1'b1), .datain1(instruction[30]), .dataout(mux_sub))
+    Mux_2 Mux_func3 (.select(S_func3), .datain0(3'b0), .datain1(InstReg[14:12]), .dataout(mux_func3));
+    Mux_2 Mux_sub (.select(S_sub), .datain0(1'b1), .datain1(InstReg[30]), .dataout(mux_sub));
 
     ALU ALU0 (.rs1(mux_rs1), .rs2(mux_rs2), .sub(mux_sub), .func3(mux_func3),
         .result(ALU_result), .compare(compare));

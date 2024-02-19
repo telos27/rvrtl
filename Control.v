@@ -1,13 +1,14 @@
 //控制模块
-module Control (clk, clr opcode, func3, compare,
-    PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, S_rs1, S_rs2, S_func3, S_PC, Branch);
+module Control (clk, clr , opcode, func3, compare,
+    PCWrite, MemoryWrite, MemoryRead, IRWrite, S_rs1, S_rs2, S_func3, S_PC, Branch);
     input clk, clr;
     input [6:0] opcode;
     input [2:0] func3, compare;
-    output PCWrite, InstructionRead, Regwrite, Memorywrite, Mux_ALU_rs2, Branch;
+    output PCWrite, MemoryWrite, MemoryRead, IRWrite , S_rs1 ;
     output [1:0] S_rs2;
+    output S_func3 , S_PC , Branch ;
 
-    reg [3:0] state = 0;
+    reg [2:0] state = 0;
 
     always @(posedge clk) begin
         if (clr == 1) begin
@@ -28,7 +29,7 @@ module Control (clk, clr opcode, func3, compare,
         case (state)
             0: state <= 1;
             1: state <= 2;
-            2: state <= 3:
+            2: state <= 3;
             3: state <= 4;
             4: state <= 0;
         endcase
