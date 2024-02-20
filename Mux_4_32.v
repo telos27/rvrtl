@@ -1,5 +1,5 @@
 //4-1选择器
-module Mux (select, datain0, datain1, datain2, datain3, dataout);
+module Mux_4_32 (select, datain0, datain1, datain2, datain3, dataout);
     input [1:0] select;
     input [31:0] datain0, datain1, datain2, datain3;
     output reg [31:0] dataout;
