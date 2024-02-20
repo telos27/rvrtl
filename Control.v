@@ -1,17 +1,17 @@
 //控制模块
-module Control (clk, clr , opcode, func3, compare,
-    PCWrite, MemoryWrite, MemoryRead, IRWrite, S_rs1, S_rs2, S_func3, S_PC, Branch);
+module Control (clk, clr, opcode, func3, compare,
+    PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, S_rs1, S_rs2, Regwrite, S_func3, S_PC, Branch);
     input clk, clr;
     input [6:0] opcode;
     input [2:0] func3, compare;
-    output PCWrite, MemoryWrite, MemoryRead, IRWrite , S_rs1 ;
-    output [1:0] S_rs2;
-    output S_func3 , S_PC , Branch ;
+    output reg PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, S_rs1, Regwrite, S_func3, S_PC, Branch;
+    output reg [1:0] S_rs2;
 
-    reg [2:0] state = 0;
+    reg [3:0] state;
 
     always @(posedge clk) begin
         if (clr == 1) begin
+            state = 0;
             PCWrite <= 0;
             IorD <= 0;
             MemoryWrite <= 0;
@@ -19,6 +19,7 @@ module Control (clk, clr , opcode, func3, compare,
             IRWrite <= 0;
             S_rs1 <= 0;
             S_rs2 <= 0;
+            Regwrite <= 0;
             S_func3 <= 0;
             S_PC <= 0;
             Branch <=0;
@@ -41,11 +42,12 @@ module Control (clk, clr , opcode, func3, compare,
                 PCWrite <= 0 & (state == 0);
                 IorD <= 0 & (state == 1);
                 MemoryWrite <= 0;
-                MemoryRead <= 1;
-                IRWrite <= 0 & (state == 2);
-                S_rs1 <= 0;
-                S_rs2 <= 0;
-                S_func3 <= 1;
+                MemoryRead <= 1 & (state == 0);
+                IRWrite <= 0 & (state == 4);
+                S_rs1 <= (0 & (state == 0)) | (1 & (state == 2));
+                S_rs2 <= (1 & (state == 0)) | (0 & (state == 2));
+                Regwrite <= 1 & (state == 4);
+                S_func3 <= (0 &(state == 0)) | (1 & (state == 2));
                 S_PC <= 0;
                 Branch <=0;
             end
@@ -55,9 +57,10 @@ module Control (clk, clr , opcode, func3, compare,
                 MemoryWrite <= 0;
                 MemoryRead <= 1;
                 IRWrite <= 0 & (state == 2);
-                S_rs1 <= 0;
-                S_rs2 <= 2;
-                S_func3 <= 1;
+                S_rs1 <= (0 & (state == 0)) | (1 & (state == 2));
+                S_rs2 <= (1 & (state == 0)) | (2 & (state == 2));
+                Regwrite <= 1 & (state == 4);
+                S_func3 <= (0 &(state == 0)) | (1 & (state == 2));
                 S_PC <= 0;
                 Branch <=0;
             end

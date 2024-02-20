@@ -1,5 +1,5 @@
 //算数逻辑运算单元
-`include "Mux_2.v"
+`include "Mux_2_32.v"
 `include "Adder_32.v"
 `include "Shift_Signal.v"
 `include "Reverser.v"
@@ -16,7 +16,7 @@ module ALU (rs1, rs2, sub, func3, result, compare);
     wire overflow, zeroflag;
     //rs2取反
     assign rs2bar = ~rs2;
-    Mux_2 Mux_b (.select(sub), .datain0(rs2), .datain1(rs2bar), .dataout(muxrs2));
+    Mux_2_32 Mux_b (.select(sub), .datain0(rs2), .datain1(rs2bar), .dataout(muxrs2));
     //加法器
     Adder_32 Adder (.a(rs1), .b(muxrs2), .sub(sub), .sum(sum), .overflow(overflow), .zeroflag(zeroflag));
     //移位模块
