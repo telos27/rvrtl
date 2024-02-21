@@ -22,7 +22,7 @@ initial begin
 end
 
 initial begin
-    $readmemh("t1.hex" , uut_cpu.RAM_Instruction.ramdata) ;
+    $readmemh("t1.hex" , uut_cpu.Memory.ramdata) ;
 end ;
 
 

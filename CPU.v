@@ -60,7 +60,7 @@ module CPU (clk, clr);
 
     Mux_2_32 Mux_PC (.select(S_PC), .datain0(ALU_result), .datain1(ALUOutReg), .dataout(newPC));
 
-    Control Control0 (.clk(clk), .opcode(InstReg[6:0]), .func3(InstReg[14:12]), .compare(compare),
+    Control Control0 (.clk(clk), .clr(clr) , .opcode(InstReg[6:0]), .func3(InstReg[14:12]), .compare(compare),
         .PCWrite(PCWrite), .MemoryWrite(MemoryWrite), .MemoryRead(MemoryRead), .IRWrite(IRWrite),
         .S_rs1(S_rs1), .S_rs2(S_rs2), .Regwrite(Regwrite), .S_func3(S_func3), .S_PC(S_PC), .Branch(Branch));
 endmodule
