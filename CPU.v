@@ -16,7 +16,8 @@ module CPU (clk, clr);
     wire [31:0] memorydata, mux_writereg, immediate, rs1data, rs2data, mux_rs1, mux_rs2, dataout, ALU_result;
     wire [2:0] mux_func3, compare;
     //控制线
-    wire PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, S_rs1, S_func3, Regwrite, S_PC, Branch;
+    wire PCWrite, IorD, MemoryWrite, MemoryRead, RegRead, IRWrite, ALUOutRegWrite;
+    wire S_rs1, S_func3, Regwrite, S_PC, Branch;
     wire [1:0] S_rs2;
     //寄存器
     reg [31:0] InstReg, MemorydataReg, rs1Reg, rs2Reg, ALUOutReg;
@@ -40,9 +41,11 @@ module CPU (clk, clr);
         .rs2(MemorydataReg[24:20]), .rddata(mux_writereg), .rs1data(rs1data), .rs2data(rs2data));
     Immediate Immediate0 (.instruction(InstReg), .immediate(immediate));
 
-    always @(posedge clk) begin
-        rs1Reg <= rs1data;
-        rs2Reg <= rs2data;
+    always @(RegRead) begin
+        if (RegRead) begin
+            rs1Reg <= rs1data;
+            rs2Reg <= rs2data;
+        end
     end
 
     Mux_2_32 Mux_ALU_rs1 (.select(S_rs1), .datain0(PC), .datain1(rs1Reg), .dataout(mux_rs1));
@@ -54,8 +57,10 @@ module CPU (clk, clr);
     ALU ALU0 (.rs1(mux_rs1), .rs2(mux_rs2), .sub(mux_sub), .func3(mux_func3),
         .result(ALU_result), .compare(compare));
 
-    always @(posedge clk) begin
-        ALUOutReg <= ALU_result;
+    always @(ALUOutRegWrite) begin
+        if (ALUOutRegWrite) begin
+            ALUOutReg <= ALU_result;
+        end
     end
 
     Mux_2_32 Mux_PC (.select(S_PC), .datain0(ALU_result), .datain1(ALUOutReg), .dataout(newPC));
