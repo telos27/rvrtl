@@ -33,6 +33,8 @@ module CPU (clk, clr);
         if (MemoryRead) begin
             InstReg <= memorydata;
             MemorydataReg <= memorydata;
+            rs1Reg <= rs1data;
+            rs2Reg <= rs2data;
         end
     end
 
@@ -40,13 +42,6 @@ module CPU (clk, clr);
     Register Register0 (.clk(clk), .write(Regwrite), .rd(MemorydataReg[11:7]), .rs1(MemorydataReg[19:15]),
         .rs2(MemorydataReg[24:20]), .rddata(mux_writereg), .rs1data(rs1data), .rs2data(rs2data));
     Immediate Immediate0 (.instruction(InstReg), .immediate(immediate));
-
-    always @(RegRead) begin
-        if (RegRead) begin
-            rs1Reg <= rs1data;
-            rs2Reg <= rs2data;
-        end
-    end
 
     Mux_2_32 Mux_ALU_rs1 (.select(S_rs1), .datain0(PC), .datain1(rs1Reg), .dataout(mux_rs1));
     Mux_4_32 Mux_ALU_rs2 (.select(S_rs2), .datain0(rs2Reg), .datain1(32'h4), .datain3(immediate),

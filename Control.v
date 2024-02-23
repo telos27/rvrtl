@@ -1,11 +1,11 @@
 //控制模块
 module Control (clk, clr, opcode, func3, compare,
-    PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, RegRead, ALUOutRegWrite,
+    PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, ALUOutRegWrite,
     S_rs1, S_rs2, Regwrite, S_func3, S_PC, Branch);
     input clk, clr;
     input [6:0] opcode;
     input [2:0] func3, compare;
-    output reg PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, RegRead, ALUOutRegWrite;
+    output reg PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, ALUOutRegWrite;
     output reg S_rs1, Regwrite, S_func3, S_PC, Branch;
     output reg [1:0] S_rs2;
 
@@ -18,7 +18,6 @@ module Control (clk, clr, opcode, func3, compare,
             IorD <= 0;
             MemoryWrite <= 0;
             MemoryRead <= 0;
-            RegRead <= 0;
             IRWrite <= 0;
             ALUOutRegWrite <= 0;
             S_rs1 <= 0;
@@ -47,8 +46,7 @@ module Control (clk, clr, opcode, func3, compare,
                 PCWrite <= 1 & (state == 0);
                 IorD <= 0 & (state == 1);
                 MemoryWrite <= 0;
-                MemoryRead <= 1 & (state == 0);
-                RegRead <= 1 & (state == 1);
+                MemoryRead <= 1 & (state == 1);
                 IRWrite <= 0 & (state == 4);
                 ALUOutRegWrite <= (1 & (state == 1)) | (1 & (state == 2));
                 S_rs1 <= (0 & (state == 0)) | (1 & (state == 2));
@@ -63,8 +61,7 @@ module Control (clk, clr, opcode, func3, compare,
                 PCWrite <= 1 & (state == 0);
                 IorD <= 0 & (state == 1);
                 MemoryWrite <= 0;
-                MemoryRead <= 1;
-                RegRead <= 0;
+                MemoryRead <= 1 & (state == 1);
                 IRWrite <= 0 & (state == 2);
                 ALUOutRegWrite <= 1 & (state == 1) | (1 & (state == 2));
                 S_rs1 <= (0 & (state == 0)) | (1 & (state == 2));
