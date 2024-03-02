@@ -7,6 +7,14 @@ module Register (clk, write, rd, rs1, rs2, rddata, rs1data, rs2data);
     
     reg [31:0] x[31:0];
 
+    integer i ;
+
+    initial begin
+        for (i=0 ; i<32 ; i++) begin
+            x[i] = 0 ;
+        end
+    end
+
     always @(posedge clk) begin
         if (write) begin
             x[rd] <= rddata;

@@ -1,14 +1,14 @@
-module PC (PCWrite, clr, newpc, pc);
-    input PCWrite, clr;
+module PC (clk , clr , PCWrite, newpc, pc);
+    input clk , clr ;
+    input PCWrite;
     input [31:0] newpc;
     output reg [31:0] pc;
 
-    initial begin
-        if (clr)
-            pc <= 32'b0;
-    end
-
-    always @(posedge PCWrite) begin
-        pc <= newpc;
+    always @(posedge clk) begin
+        if (clr) begin 
+            pc <= 32'b0 ;
+        end else begin
+            pc <= newpc;
+        end    
     end
 endmodule
