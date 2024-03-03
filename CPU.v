@@ -22,20 +22,21 @@ module CPU (clk, clr);
     //寄存器
     reg [31:0] InstReg, MemorydataReg, rs1Reg, rs2Reg, ALUOutReg;
 
-    PC PC0 (.PCWrite(PCWrite), .clr(clr), .newpc(newPC), .pc(PC));
+    PC PC0 (.clk(clk) , .PCWrite(PCWrite), .clr(clr), .newpc(newPC), .pc(PC));
 
     Mux_2_32 Mux_MemoryAddress (.select(IorD), .datain0(PC), .datain1(ALUOutReg), .dataout(memoryaddress));
 
     RAM Memory (.address(memoryaddress), .clk(clk), .clr(clr), .write(MemoryWrite), .read(MemoryRead),
         .datain(rs2Reg), .dataout(memorydata));
 
-    always @(MemoryRead) begin
+    always @(posedge clk) begin
         if (MemoryRead) begin
             InstReg <= memorydata;
             MemorydataReg <= memorydata;
-            rs1Reg <= rs1data;
-            rs2Reg <= rs2data;
         end
+        // TODO: need control signal
+        rs1Reg <= rs1data;
+        rs2Reg <= rs2data;
     end
 
     Mux_2_32 Mux_MemtoReg (.select(MemtoReg), .datain0(ALUOutReg), .datain1(MemorydataReg), .dataout(mux_writereg));
@@ -43,8 +44,8 @@ module CPU (clk, clr);
         .rs2(MemorydataReg[24:20]), .rddata(mux_writereg), .rs1data(rs1data), .rs2data(rs2data));
     Immediate Immediate0 (.instruction(InstReg), .immediate(immediate));
 
-    Mux_2_32 Mux_ALU_rs1 (.select(S_rs1), .datain0(PC), .datain1(rs1Reg), .dataout(mux_rs1));
-    Mux_4_32 Mux_ALU_rs2 (.select(S_rs2), .datain0(rs2Reg), .datain1(32'h4), .datain3(immediate),
+    Mux_2_32 Mux_ALU_rs1 (.select(S_rs1), .datain0(PC), .datain1(rs1data), .dataout(mux_rs1));
+    Mux_4_32 Mux_ALU_rs2 (.select(S_rs2), .datain0(rs2data), .datain1(32'h4), .datain3(immediate),
         .dataout(mux_rs2));
     Mux_2_3 Mux_func3 (.select(S_func3), .datain0(3'b0), .datain1(InstReg[14:12]), .dataout(mux_func3));
     Mux_2_1 Mux_sub (.select(S_sub), .datain0(1'b1), .datain1(InstReg[30]), .dataout(mux_sub));
