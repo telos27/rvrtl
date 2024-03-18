@@ -16,7 +16,7 @@ module CPU (clk, clr);
     wire [31:0] memorydata, mux_writereg, immediate, rs1data, rs2data, mux_rs1, mux_rs2, dataout, ALU_result;
     wire [2:0] mux_func3, compare;
     //控制线
-    wire PCWrite, IorD, MemoryWrite, MemoryRead, RegRead, IRWrite, ALUOutRegWrite;
+    wire PCWrite, IorD, MemoryWrite, MemoryRead, ReadRegs, RegRead, IRWrite, ALUOutRegWrite;
     wire S_rs1, S_func3, Regwrite, S_PC, Branch;
     wire [1:0] S_rs2;
     //寄存器
@@ -34,9 +34,10 @@ module CPU (clk, clr);
             InstReg <= memorydata;
             MemorydataReg <= memorydata;
         end
-        // TODO: need control signal
-        rs1Reg <= rs1data;
-        rs2Reg <= rs2data;
+        if (ReadRegs) begin
+            rs1Reg <= rs1data;
+            rs2Reg <= rs2data;
+        end
     end
 
     Mux_2_32 Mux_MemtoReg (.select(MemtoReg), .datain0(ALUOutReg), .datain1(MemorydataReg), .dataout(mux_writereg));
