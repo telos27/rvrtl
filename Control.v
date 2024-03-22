@@ -5,13 +5,42 @@ module Control (clk, clr, opcode, func3, compare,
     input clk, clr;
     input [6:0] opcode;
     input [2:0] func3, compare;
-    output  PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, ALUOutRegWrite;
-    output  S_rs1, ReadRegs, RegRead, Regwrite, S_func3, S_PC, Branch;
+    output  PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, RegFetch, ALUOutRegWrite;
+    output  S_rs1, RegFetch, RegRead, Regwrite, S_func3, S_PC, Branch;
     output  [1:0] S_rs2;
 
     reg [2:0] state;
 
-    case (opcode)
+    always @(posedge clk) begin
+        if (clr) 
+            state <= 0 ;
+        else
+        case (state)
+            0: state <= 1;
+            1: state <= 2;
+            2: state <= 3;
+            3: state <= 4;
+            4: state <= 0;
+        endcase
+    end
+
+    assign PCWrite = !clr & (state==0);
+    assign IorD = 0;
+    assign MemoryWrite = 0;
+    assign MemoryRead = !clr & (state==0);
+    assign IRWrite = 0;
+    assign RegFetch = 0;
+    assign MemtoReg = 0;
+    assign Regwrite = 0;
+    assign S_rs1 = 0;
+    assign S_rs2[0] = !clr & (state==3) & (opcode==6'b0110011);
+    assign S_rs2[1] = !clr & (state==3) & (opcode==6'b0010011);
+    assign S_func3 = !clr & (state==3) & (opcode==(6'b0110011 or 6'b0010011));
+    assign S_sub = !clr & (state==3) & (opcode==(6'b0110011 or 6'b0010011));
+    assign ALUOutRegWrite = (!clr & (state==1)) | (!clr & (state==3) & (opcode==(6'b0110011 or 6'b0010011)));
+    assign S_PC = 0;
+    
+    /*case (opcode)
         0110011: begin  //R-type，arithmetic logic operation，算术逻辑运算
             assign PCWrite = !clr & state==0;
             assign IorD = 0;
@@ -64,19 +93,5 @@ module Control (clk, clr, opcode, func3, compare,
         1110011: begin  //I-type，Environment Call and Environment Break，环境调用和环境中断
             
         end
-    endcase
-
-    always @(posedge clk) begin
-        if (clr) 
-            state <= 0 ;
-        else
-        case (state)
-            0: state <= 1;
-            1: state <= 2;
-            2: state <= 3;
-            3: state <= 4;
-            4: state <= 0;
-        endcase
-    end
-
+    endcase*/
 endmodule
