@@ -7,8 +7,9 @@ module PC (clk , clr , PCWrite, newpc, pc);
     always @(posedge clk) begin
         if (clr) begin 
             pc <= 32'b0 ;
-        end else begin
+        end 
+        else if(PCWrite) begin
             pc <= newpc;
-        end    
+        end
     end
 endmodule
