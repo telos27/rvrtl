@@ -17,9 +17,9 @@ module CPU (clk, clr);
     wire [31:0] memorydata, mux_writereg, immediate, rs1data, rs2data, mux_rs1, mux_rs2, dataout, ALU_result;
     wire [2:0] mux_func3, compare;
     //控制线
-    wire PCWrite, IorD, MemoryWrite, MemoryRead, RegFetch, RegRead, IRWrite, ALUOutRegWrite;
-    wire S_rs1, S_func3, Regwrite, S_PC, Branch;
-    wire [1:0] S_rs2;
+    wire PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, RegFetch, MemtoReg, RegWrite;
+    wire S_rs1, S_func3, ALUOutRegWrite, S_PC;
+    wire [1:0] S_rs2, S_sub;
     //寄存器
     reg [31:0] InstReg, MemorydataReg, rs1Reg, rs2Reg, ALUOutReg;
 
@@ -39,12 +39,14 @@ module CPU (clk, clr);
             rs1Reg <= rs1data;
             rs2Reg <= rs2data;
         end
-        ALUOutReg <= ALU_result;
+        if (ALUOutRegWrite) begin
+            ALUOutReg <= ALU_result;            
+        end
     end
 
     Mux_2_32 Mux_MemtoReg (.select(MemtoReg), .datain0(ALUOutReg), .datain1(MemorydataReg),
         .dataout(mux_writereg));
-    Register Register0 (.clk(clk), .write(Regwrite), .rd(MemorydataReg[11:7]), .rs1(MemorydataReg[19:15]),
+    Register Register0 (.clk(clk), .write(RegWrite), .rd(MemorydataReg[11:7]), .rs1(MemorydataReg[19:15]),
         .rs2(MemorydataReg[24:20]), .rddata(mux_writereg), .rs1data(rs1data), .rs2data(rs2data));
     Immediate Immediate0 (.instruction(InstReg), .immediate(immediate));
 
@@ -60,7 +62,8 @@ module CPU (clk, clr);
 
     Mux_2_32 Mux_PC (.select(S_PC), .datain0(ALU_result), .datain1(ALUOutReg), .dataout(newPC));
 
-    Control Control0 (.clk(clk), .clr(clr) , .opcode(InstReg[6:0]), .func3(InstReg[14:12]), .compare(compare),
-        .PCWrite(PCWrite), .MemoryWrite(MemoryWrite), .MemoryRead(MemoryRead), .IRWrite(IRWrite),
-        .S_rs1(S_rs1), .S_rs2(S_rs2), .Regwrite(Regwrite), .S_func3(S_func3), .S_PC(S_PC), .Branch(Branch));
+    Control Control0 (.clk(clk), .clr(clr), .opcode(InstReg[6:0]), .func3(InstReg[14:12]), .compare(compare),
+    .PCWrite(PCWrite), .IorD(IorD), .MemoryWrite(MemoryWrite), .MemoryRead(MemoryRead), .IRWrite(IRWrite),
+    .RegFetch(RegFetch), .MemtoReg(MemtoReg),.RegWrite(RegWrite), .S_rs1(S_rs1), .S_rs2(S_rs2),
+    .S_func3(S_func3), .S_sub(S_sub), .ALUOutRegWrite(ALUOutRegWrite), .S_PC(S_PC));
 endmodule

@@ -1,13 +1,13 @@
 //控制模块
 module Control (clk, clr, opcode, func3, compare,
-    PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, ALUOutRegWrite,
-    S_rs1, S_rs2, Regwrite, S_func3, S_PC, Branch);
+    PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, RegFetch, MemtoReg, RegWrite,
+    S_rs1, S_rs2, S_func3, S_sub, ALUOutRegWrite, S_PC);
     input clk, clr;
     input [6:0] opcode;
     input [2:0] func3, compare;
-    output  PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, RegFetch, ALUOutRegWrite;
-    output  S_rs1, RegFetch, RegRead, Regwrite, S_func3, S_PC, Branch;
-    output  [1:0] S_rs2;
+    output  PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, RegFetch, MemtoReg, RegWrite;
+    output  S_rs1, S_func3, ALUOutRegWrite, S_PC;
+    output  [1:0] S_rs2, S_sub;
 
     reg [2:0] state;
 
@@ -31,13 +31,13 @@ module Control (clk, clr, opcode, func3, compare,
     assign IRWrite = 0;
     assign RegFetch = 0;
     assign MemtoReg = 0;
-    assign Regwrite = 0;
+    assign RegWrite = 0;
     assign S_rs1 = 0;
-    assign S_rs2[0] = !clr & (state==3) & (opcode==6'b0110011);
-    assign S_rs2[1] = !clr & (state==3) & (opcode==6'b0010011);
-    assign S_func3 = !clr & (state==3) & (opcode==(6'b0110011 or 6'b0010011));
-    assign S_sub = !clr & (state==3) & (opcode==(6'b0110011 or 6'b0010011));
-    assign ALUOutRegWrite = (!clr & (state==1)) | (!clr & (state==3) & (opcode==(6'b0110011 or 6'b0010011)));
+    assign S_rs2[0] = !clr & (state==3) & (opcode==7'b0110011);
+    assign S_rs2[1] = !clr & (state==3) & (opcode==7'b0010011);
+    assign S_func3 = !clr & (state==3) & (opcode==(7'b0110011 | 7'b0010011));
+    assign S_sub = !clr & (state==3) & (opcode==(7'b0110011 | 7'b0010011));
+    assign ALUOutRegWrite = (!clr & (state==1)) | (!clr & (state==3) & (opcode==(7'b0110011 | 7'b0010011)));
     assign S_PC = 0;
     
     /*case (opcode)
