@@ -1,43 +1,70 @@
 //控制模块
 module Control (clk, clr, opcode, func3, compare,
-    PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, RegFetch, MemtoReg, RegWrite,
+    PCWrite, IorD, MemoryWrite, IRWrite, RegFetch, MemtoReg, RegWrite,
     S_rs1, S_rs2, S_func3, S_sub, ALUOutRegWrite, S_PC);
     input clk, clr;
     input [6:0] opcode;
     input [2:0] func3, compare;
-    output  PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, RegFetch, MemtoReg, RegWrite;
+    output  PCWrite, IorD, MemoryWrite, IRWrite, RegFetch, MemtoReg, RegWrite;
     output  S_rs1, S_func3, ALUOutRegWrite, S_PC;
     output  [1:0] S_rs2, S_sub;
 
-    reg [2:0] state;
+    reg [1:0] state;
 
     always @(posedge clk) begin
-        if (clr) 
+        if (clr) begin
             state <= 0 ;
-        else
+            PCWrite = 0
+            IorD = 0;
+            MemoryWrite = 0;
+            MemoryRead = 0
+            IRWrite = 0;
+            RegFetch = 0;
+            MemtoReg = 0;
+            RegWrite = 0;
+            S_rs1 = 0;
+            S_rs2 = 0;
+            S_rs2 = 0;
+            S_func3 = 0;
+            S_sub = 0;
+            ALUOutRegWrite = 0;
+            S_PC = 0;
+        end
         case (state)
             0: state <= 1;
             1: state <= 2;
             2: state <= 3;
-            3: state <= 4;
-            4: state <= 0;
+            3: state <= 0;
         endcase
     end
 
     assign PCWrite = !clr & (state==0);
-    assign IorD = 0;
-    assign MemoryWrite = 0;
-    assign MemoryRead = !clr & (state==0);
-    assign IRWrite = 0;
-    assign RegFetch = 0;
-    assign MemtoReg = 0;
-    assign RegWrite = 0;
-    assign S_rs1 = 0;
-    assign S_rs2[0] = !clr & (state==3) & (opcode==7'b0110011);
-    assign S_rs2[1] = !clr & (state==3) & (opcode==7'b0010011);
+
+    assign IorD = !clr & (state==3) & (opcode==7'b0000011 | 7'b0100011);
+
+    assign MemoryWrite = !clr & (state==3) & (opcode==7'b0100011);
+
+    assign IRWrite = !clr & (state==0);
+
+    assign RegFetch = !clr & (state==1);
+
+    assign MemtoReg = !clr & (state==3) & (opcode==7'b0000011);
+
+    assign RegWrite = !clr & (state==3) & (opcode==(7'b0110011 | 7'b0010011));
+
+    assign S_rs1 = !clr & (state==2) & (opcode==(7'b0110011 | 7'b0010011 | 7'b1100011));
+
+    assign S_rs2[0] = !clr & (state==0);
+    assign S_rs2[1] = !clr & ((state==1) | (state==2) & (opcode==7'b0010011 | 7'b0000011 | 7'b0100011));
+
     assign S_func3 = !clr & (state==3) & (opcode==(7'b0110011 | 7'b0010011));
-    assign S_sub = !clr & (state==3) & (opcode==(7'b0110011 | 7'b0010011));
-    assign ALUOutRegWrite = (!clr & (state==1)) | (!clr & (state==3) & (opcode==(7'b0110011 | 7'b0010011)));
+
+    assign S_sub[0] = !clr & (state==3) & (opcode==(7'b0110011 | 7'b0010011));
+    assign S_sub[1] = !clr & (state==3) & (opcode==7'b1100011);
+
+    assign ALUOutRegWrite = !clr & (state==1) |
+        (state==2) & (opcode==(7'b0110011 | 7'b0010011 | 7'b0000011 | 7'b0100011)));
+
     assign S_PC = 0;
     
     /*case (opcode)

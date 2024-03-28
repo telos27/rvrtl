@@ -17,21 +17,20 @@ module CPU (clk, clr);
     wire [31:0] memorydata, mux_writereg, immediate, rs1data, rs2data, mux_rs1, mux_rs2, dataout, ALU_result;
     wire [2:0] mux_func3, compare;
     //控制线
-    wire PCWrite, IorD, MemoryWrite, MemoryRead, IRWrite, RegFetch, MemtoReg, RegWrite;
+    wire PCWrite, IorD, MemoryWrite, IRWrite, RegFetch, MemtoReg, RegWrite;
     wire S_rs1, S_func3, ALUOutRegWrite, S_PC;
     wire [1:0] S_rs2, S_sub;
     //寄存器
-    reg [31:0] InstReg, MemorydataReg, rs1Reg, rs2Reg, ALUOutReg;
+    reg [31:0] InstReg, rs1Reg, rs2Reg, ALUOutReg;
 
     PC PC0 (.clk(clk) , .PCWrite(PCWrite), .clr(clr), .newpc(newPC), .pc(PC));
 
     Mux_2_32 Mux_MemoryAddress (.select(IorD), .datain0(PC), .datain1(ALUOutReg), .dataout(memoryaddress));
 
-    RAM Memory (.address(memoryaddress), .clk(clk), .clr(clr), .write(MemoryWrite), .read(MemoryRead),
-        .datain(rs2Reg), .dataout(memorydata));
+    RAM Memory (.address(memoryaddress), .clk(clk), .clr(clr), .write(MemoryWrite), .datain(rs2Reg),
+        .dataout(memorydata));
 
     always @(posedge clk) begin
-        MemorydataReg <= memorydata;
         if (IRWrite) begin
             InstReg <= memorydata;
         end
@@ -40,15 +39,15 @@ module CPU (clk, clr);
             rs2Reg <= rs2data;
         end
         if (ALUOutRegWrite) begin
-            ALUOutReg <= ALU_result;            
+            ALUOutReg <= ALU_result;
         end
     end
 
-    Mux_2_32 Mux_MemtoReg (.select(MemtoReg), .datain0(ALUOutReg), .datain1(MemorydataReg),
+    Mux_2_32 Mux_MemtoReg (.select(MemtoReg), .datain0(ALUOutReg), .datain1(memorydata),
         .dataout(mux_writereg));
     Register Register0 (.clk(clk), .write(RegWrite), .rd(MemorydataReg[11:7]), .rs1(MemorydataReg[19:15]),
         .rs2(MemorydataReg[24:20]), .rddata(mux_writereg), .rs1data(rs1data), .rs2data(rs2data));
-    Immediate Immediate0 (.instruction(InstReg), .immediate(immediate));
+    Immediate Immediate0 (.clk(clk), .instruction(InstReg), .immediate(immediate));
 
     Mux_2_32 Mux_ALU_rs1 (.select(S_rs1), .datain0(PC), .datain1(rs1Reg), .dataout(mux_rs1));
     Mux_4_32 Mux_ALU_rs2 (.select(S_rs2), .datain0(rs2Reg), .datain1(32'h4), .datain2(immediate),
