@@ -12,24 +12,6 @@ module Control (clk, clr, opcode, func3, compare,
     reg [1:0] state;
 
     always @(posedge clk) begin
-        if (clr) begin
-            state <= 0 ;
-            PCWrite = 0
-            IorD = 0;
-            MemoryWrite = 0;
-            MemoryRead = 0
-            IRWrite = 0;
-            RegFetch = 0;
-            MemtoReg = 0;
-            RegWrite = 0;
-            S_rs1 = 0;
-            S_rs2 = 0;
-            S_rs2 = 0;
-            S_func3 = 0;
-            S_sub = 0;
-            ALUOutRegWrite = 0;
-            S_PC = 0;
-        end
         case (state)
             0: state <= 1;
             1: state <= 2;
@@ -63,7 +45,7 @@ module Control (clk, clr, opcode, func3, compare,
     assign S_sub[1] = !clr & (state==3) & (opcode==7'b1100011);
 
     assign ALUOutRegWrite = !clr & (state==1) |
-        (state==2) & (opcode==(7'b0110011 | 7'b0010011 | 7'b0000011 | 7'b0100011)));
+        (state==2) & (opcode==(7'b0110011 | 7'b0010011 | 7'b0000011 | 7'b0100011));
 
     assign S_PC = 0;
     

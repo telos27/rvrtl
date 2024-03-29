@@ -45,8 +45,8 @@ module CPU (clk, clr);
 
     Mux_2_32 Mux_MemtoReg (.select(MemtoReg), .datain0(ALUOutReg), .datain1(memorydata),
         .dataout(mux_writereg));
-    Register Register0 (.clk(clk), .write(RegWrite), .rd(MemorydataReg[11:7]), .rs1(MemorydataReg[19:15]),
-        .rs2(MemorydataReg[24:20]), .rddata(mux_writereg), .rs1data(rs1data), .rs2data(rs2data));
+    Register Register0 (.clk(clk), .write(RegWrite), .rd(memorydata[11:7]), .rs1(memorydata[19:15]),
+        .rs2(memorydata[24:20]), .rddata(mux_writereg), .rs1data(rs1data), .rs2data(rs2data));
     Immediate Immediate0 (.clk(clk), .instruction(InstReg), .immediate(immediate));
 
     Mux_2_32 Mux_ALU_rs1 (.select(S_rs1), .datain0(PC), .datain1(rs1Reg), .dataout(mux_rs1));
@@ -62,7 +62,7 @@ module CPU (clk, clr);
     Mux_2_32 Mux_PC (.select(S_PC), .datain0(ALU_result), .datain1(ALUOutReg), .dataout(newPC));
 
     Control Control0 (.clk(clk), .clr(clr), .opcode(InstReg[6:0]), .func3(InstReg[14:12]), .compare(compare),
-    .PCWrite(PCWrite), .IorD(IorD), .MemoryWrite(MemoryWrite), .MemoryRead(MemoryRead), .IRWrite(IRWrite),
-    .RegFetch(RegFetch), .MemtoReg(MemtoReg),.RegWrite(RegWrite), .S_rs1(S_rs1), .S_rs2(S_rs2),
-    .S_func3(S_func3), .S_sub(S_sub), .ALUOutRegWrite(ALUOutRegWrite), .S_PC(S_PC));
+    .PCWrite(PCWrite), .IorD(IorD), .MemoryWrite(MemoryWrite), .IRWrite(IRWrite), .RegFetch(RegFetch),
+    .MemtoReg(MemtoReg),.RegWrite(RegWrite), .S_rs1(S_rs1), .S_rs2(S_rs2), .S_func3(S_func3), .S_sub(S_sub),
+    .ALUOutRegWrite(ALUOutRegWrite), .S_PC(S_PC));
 endmodule
