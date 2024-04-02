@@ -2,6 +2,7 @@
 `include "PC.v"
 `include "Immediate.v"
 `include "Control.v"
+`include "BHW.v"
 `include "Register.v"
 `include "Mux_2_1.v"
 `include "Mux_2_3.v"
@@ -13,7 +14,7 @@
 module CPU (clk, clr);
     input clk, clr;
     //数据线
-    wire [31:0] PC, newPC, memoryaddress, nextPC, PCBranch;
+    wire [31:0] PC, newPC, memoryaddress, nextPC, PCBranch, mux_BHW, BHW_data;
     wire [31:0] memorydata, mux_writereg, immediate, rs1data, rs2data, mux_rs1, mux_rs2, dataout, ALU_result;
     wire [2:0] mux_func3, compare;
     //控制线
@@ -43,11 +44,14 @@ module CPU (clk, clr);
         end
     end
 
+    Mux_2_32 Mux_BHW(.select(InstReg[6]), .datain0(memorydata), .datain1(rs2Reg), .dataout(mux_BHW));
+    BHW BHW0 (.func3(InstReg[14:12]), .datain(mux_BHW), .dataout(BHW_data));
+
     Mux_2_32 Mux_MemtoReg (.select(MemtoReg), .datain0(ALUOutReg), .datain1(memorydata),
         .dataout(mux_writereg));
     Register Register0 (.clk(clk), .write(RegWrite), .rd(memorydata[11:7]), .rs1(memorydata[19:15]),
         .rs2(memorydata[24:20]), .rddata(mux_writereg), .rs1data(rs1data), .rs2data(rs2data));
-    Immediate Immediate0 (.clk(clk), .instruction(InstReg), .immediate(immediate));
+    Immediate Immediate0 (.instruction(InstReg), .immediate(immediate));
 
     Mux_2_32 Mux_ALU_rs1 (.select(S_rs1), .datain0(PC), .datain1(rs1Reg), .dataout(mux_rs1));
     Mux_4_32 Mux_ALU_rs2 (.select(S_rs2), .datain0(rs2Reg), .datain1(32'h4), .datain2(immediate),

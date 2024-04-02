@@ -1,10 +1,9 @@
 //立即数扩展
-module Immediate (clk, instruction, immediate);
-    input clk;
+module Immediate (instruction, immediate);
     input [31:0] instruction;
     output reg [31:0] immediate;
 
-    always @(clk) begin
+    always @(*) begin
         case (instruction[6:0])
             //I-type Immediate
             7'b0010011, 7'b0000011, 7'b1100111, 7'b1110011:
