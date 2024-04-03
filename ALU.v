@@ -13,7 +13,7 @@ module ALU (rs1, rs2, sub, func3, result, compare);
     output reg [2:0]compare;
     wire [31:0]rs2bar, muxrs2, sum, muxshift, shift;
     wire [31:0]shiftdatatemp, shiftdataout, shiftright, signextend;
-    wire overflow, zeroflag;
+    wire overflow, zeroflag, slt;
     //rs2取反
     assign rs2bar = ~rs2;
     Mux_2_32 Mux_b (.select(sub), .datain0(rs2), .datain1(rs2bar), .dataout(muxrs2));
@@ -25,12 +25,14 @@ module ALU (rs1, rs2, sub, func3, result, compare);
     Shifter_32 Shifter (.shift(shift), .datain(shiftdatatemp), .dataout(shiftdataout));
     Reverser ReverserOut (.right(func3[2]), .datain(shiftdataout), .dataout(shiftright));
     SignExtender SignExtender (.shift5(rs2[4:0]), .rsa(sub), .sign(rs1[31]), .signextend(signextend));
+    //小于置1
+    assign slt = (rs1[31]===rs2[31])^overflow;
     //ALU输出
     always @(*) begin
         case (func3)
             0: result <= sum;//算数结果
             1: result <= shiftdataout;//左移
-            2: result <= (rs1[31]===rs2[31])^overflow;//小于置1
+            2: result <= slt;//小于置1
             3: result <= !overflow;//无符号小于置1
             4: result <= rs1 ^ rs2;//逻辑异或
             5: result <= shiftright | signextend;//右移
@@ -38,6 +40,6 @@ module ALU (rs1, rs2, sub, func3, result, compare);
             7: result <= rs1 & rs2;//逻辑与
         endcase
         //rs1和rs2比较大小，设置标志位
-        compare = {zeroflag, (rs1[31]===rs2[31])^overflow, !overflow};//零标志位、有符号溢出、无符号溢出
+        compare = {!overflow, slt, zeroflag};//零标志位、有符号溢出、无符号溢出
     end
 endmodule

@@ -1,12 +1,12 @@
 //控制模块
 module Control (clk, clr, opcode, func3, compare,
     PCWrite, IorD, MemoryWrite, IRWrite, RegFetch, MemtoReg, RegWrite,
-    S_rs1, S_rs2, S_func3, S_sub, ALUOutRegWrite, S_PC);
+    S_rs1, S_rs2, S_func3, S_sub, ALUOutRegWrite, S_PC, PCWriteCond);
     input clk, clr;
     input [6:0] opcode;
     input [2:0] func3, compare;
     output  PCWrite, IorD, MemoryWrite, IRWrite, RegFetch, MemtoReg, RegWrite;
-    output  S_rs1, S_func3, ALUOutRegWrite, S_PC;
+    output  S_rs1, S_func3, ALUOutRegWrite, S_PC, PCWriteCond;
     output  [1:0] S_rs2, S_sub;
 
     reg [1:0] state;
@@ -37,17 +37,22 @@ module Control (clk, clr, opcode, func3, compare,
     assign S_rs1 = !clr & (state==2) & (opcode==(7'b0110011 | 7'b0010011 | 7'b1100011));
 
     assign S_rs2[0] = !clr & (state==0);
-    assign S_rs2[1] = !clr & ((state==1) | (state==2) & (opcode==7'b0010011 | 7'b0000011 | 7'b0100011));
+    assign S_rs2[1] = !clr & (((state==1) | (state==2) & (opcode==7'b0010011 | 7'b0000011 | 7'b0100011)));
 
     assign S_func3 = !clr & (state==3) & (opcode==(7'b0110011 | 7'b0010011));
 
     assign S_sub[0] = !clr & (state==3) & (opcode==(7'b0110011 | 7'b0010011));
     assign S_sub[1] = !clr & (state==3) & (opcode==7'b1100011);
 
-    assign ALUOutRegWrite = !clr & (state==1) |
-        (state==2) & (opcode==(7'b0110011 | 7'b0010011 | 7'b0000011 | 7'b0100011));
+    assign ALUOutRegWrite = !clr & ((state==1) |
+        (state==2) & (opcode==(7'b0110011 | 7'b0010011 | 7'b0000011 | 7'b0100011)));
 
-    assign S_PC = 0;
+    assign S_PC = !clr & (state==2) & (opcode==7'b1100011);
+
+    assign PCWriteCond = !clr & (state==2) & (opcode==7'b1100011) &
+        ((func3==0) & (compare==0) | (func3==1) & (compare==1) |
+         (func3==4) & (compare==0) | (func3==5) & (compare==2) |
+         (func3==6) & (compare==0) | (func3==7) & (compare==4));
     
     /*case (opcode)
         0110011: begin  //R-type，arithmetic logic operation，算术逻辑运算
