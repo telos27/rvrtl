@@ -5,9 +5,9 @@
 `include "Reverser.v"
 `include "Shifter_32.v"
 `include "SignExtender.v"
-module ALU (rs1, rs2, sub, func3, result, compare);
+module ALU (clr, rs1, rs2, sub, func3, result, compare);
     input [31:0]rs1, rs2;
-    input sub;
+    input clr, sub;
     input [2:0]func3;
     output reg [31:0]result;
     output reg [2:0]compare;
@@ -29,11 +29,14 @@ module ALU (rs1, rs2, sub, func3, result, compare);
     assign slt = (rs1[31]===rs2[31])^overflow;
     //ALU输出
     always @(*) begin
+        if (clr) begin
+            result <= 0;
+        end
         case (func3)
             0: result <= sum;//算数结果
             1: result <= shiftdataout;//左移
-            2: result <= slt;//小于置1
-            3: result <= !overflow;//无符号小于置1
+            2: result <= slt?32'b1:32'b0;//小于置1
+            3: result <= !overflow?32'b1:32'b0;//无符号小于置1
             4: result <= rs1 ^ rs2;//逻辑异或
             5: result <= shiftright | signextend;//右移
             6: result <= rs1 | rs2;//逻辑或
