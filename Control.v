@@ -9,14 +9,18 @@ module Control (clk, clr, opcode, func3, compare,
     output  S_rs1, S_func3, ALUOutRegWrite, S_PC, PCWriteCond;
     output  [1:0] S_rs2, S_sub, S_rd;
 
-    reg [1:0] state;
+    reg [12:0] state;
 
     always @(posedge clk) begin
+        if (clr) begin
+            state <= 0;
+        end
         case (state)
             0: state <= 1;
             1: state <= 2;
             2: state <= 3;
-            3: state <= 0;
+            3: state <= 4;
+            4: state <= 0;
         endcase
     end
 

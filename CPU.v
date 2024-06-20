@@ -31,7 +31,13 @@ module CPU (clk, clr);
     RAM Memory (.address(memoryaddress), .clk(clk), .clr(clr), .write(MemoryWrite), .datain(rs2Reg),
         .dataout(memorydata));
     //临时寄存器
-    always @(posedge clk) begin
+    always @(posedge clk or negedge clr) begin
+        if (clr) begin
+            InstReg <= 0;
+            rs1Reg <= 0;
+            rs2Reg <= 0;
+            ALUOutReg <= 0;
+        end
         if (IRWrite) begin
             InstReg <= memorydata;
         end
