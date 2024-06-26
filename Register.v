@@ -1,6 +1,7 @@
 //32个整型寄存器
-module Register (clk, write, rd, rs1, rs2, rddata, rs1data, rs2data);
-    input clk, write;
+module Register (clk, clr, write, rd, rs1, rs2, rddata, rs1data, rs2data);
+    input clk, clr;
+    input write;
     input [4:0] rd, rs1, rs2;
     input [31:0] rddata;
     output reg [31:0] rs1data, rs2data;

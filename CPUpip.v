@@ -23,7 +23,7 @@ module CPUpip (
     reg     [4:0]   EX_MEM_rd;
     reg     [4:0]   EX_MEM_Control;
     //访存、写回
-    reg     [31:0]  MEM_WB_Readdata, MEM_WB_ALUresult
+    reg     [31:0]  MEM_WB_Readdata, MEM_WB_ALUresult;
     reg     [4:0]   MEM_WB_rd;
     reg     [1:0]   MEM_WB_Control;
     //控制线
@@ -31,8 +31,10 @@ module CPUpip (
     wire    [2:0]   ALUflag;
     //数据线
     wire    [31:0]  PC, Instruction;
-    wire    [31:0]  rs1, rs2, immediate, func7, func3
-    wire    [31:0]  AddSum, ALUresult;
+    wire    [31:0]  rs1, rs2, immediate;
+    wire    [6:0]   func7;
+    wire    [2:0]   func3;
+    wire    [31:0]  SumAdd, ALUresult;
     wire    [31:0]  Writeregister;
     wire    [31:0]  Readdata;
     //取指
@@ -49,14 +51,15 @@ module CPUpip (
     end
     //译码
     ID ID (
-        .clk(clk),                  .clr(clr),
-        .RegWrite(MEM_WB_rd),
-        .Instruction(IF_ID_Ins),    .Writedata(Writeregister),
-        .rs1(rs1),                  .rs2(rs2),                  .immediate(immediate),
-        .func7(func7),              .func3(func3)
+        .clk(clk),                      .clr(clr),
+        .RegWrite(MEM_WB_Control[1]),
+        .Instruction(IF_ID_Ins),        .Writedata(Writeregister),
+        .rs1(rs1),                      .rs2(rs2),                  .immediate(immediate),
+        .func7(func7),                  .func3(func3)
     );
     //控制
     Controlpip Controlpip (
+        .clr(clr),
         .opcode(Instruction[6:0]),
         .ALUSrc(ALUSrc),            .AddSrc(AddSrc),
         .Branch(Branch),            .MemWrite(MemWrite), .MemRead(MemRead),
@@ -77,14 +80,14 @@ module CPUpip (
     EX EX (
         .clk(clk),                  .clr(clr),
         .AddSrc(ID_EX_Control[0]),  .ALUSrc(ID_EX_Control[1]),
-        .PCin(ID_EX_PC),
+        .PC(ID_EX_PC),
         .rs1(ID_EX_rs1),            .rs2(ID_EX_rs2),            .immediate(ID_EX_imm),
         .func7(ID_EX_func7),        .func3(ID_EX_func3),
-        .AddSum(AddSum),            .ALUresult(ALUresult),      .ALUflag(ALUflag)
+        .SumAdd(SumAdd),            .ALUresult(ALUresult),      .ALUflag(ALUflag)
     );
     //执行，访存
     always @(posedge clk) begin
-        EX_MEM_AddSum       <= AddSum;
+        EX_MEM_AddSum       <= SumAdd;
         EX_MEM_ALUresult    <= ALUresult;
         EX_MEM_ALUflag      <= ALUflag;
         EX_MEM_rs2          <= ID_EX_rs2;
@@ -97,7 +100,7 @@ module CPUpip (
         .Branch(EX_MEM_Control[0]),
         .MemWrite(EX_MEM_Control[1]),   .MemRead(EX_MEM_Control[2]), .ALUflag(EX_MEM_ALUflag),
         .PCSrc(PCSrc),
-        .ALUresult(EX_MEM_ALUresult),   .rd(EX_MEM_rs2),
+        .ALUresult(EX_MEM_ALUresult),   .rs2(EX_MEM_rs2),
         .Readdata(Readdata)
     );
     //访存，写回

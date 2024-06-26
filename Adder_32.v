@@ -1,6 +1,5 @@
 //32位加法器
 `include "FastAdder_16.v"
-
 module Adder_32 (a, b, sub, sum, overflow, zeroflag);
     input [31:0] a, b;
     input sub;

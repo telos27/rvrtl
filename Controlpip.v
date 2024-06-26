@@ -1,12 +1,13 @@
 //流水线控制
 module Controlpip (
+    clr,
     opcode,
-    PCSrc,
     RegWrite,
     ALUSrc, AddSrc,
     Branch, MemWrite, MemRead,
     MemtoReg
 );
+    input clr;
     input [6:0] opcode;
     output ALUSrc, AddSrc;
     output Branch, MemWrite, MemRead;

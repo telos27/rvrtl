@@ -1,7 +1,5 @@
 //取指
-`include "MUX_2_32.v"
 `include "PC.v"
-`include "Adder_32.v"
 `include "RAM.v"
 module IF (
     clk, clr,
@@ -15,11 +13,11 @@ module IF (
 
     output [31:0] PC, Instruction;
 
-    wire [31:0] MuxPC, PCout, PCinc;
+    wire [31:0] newPC, PCout, PCinc;
 
-    Mux_2_32 MuxPC (.select(PCSrc), .datain0(PCinc), .datain1(AddSum), .dataout(MuxPC));
+    Mux_2_32 MuxPC (.select(PCSrc), .datain0(PCinc), .datain1(AddSum), .dataout(newPC));
 
-    PC PC0 (.clk(clk), .clr(clr), .newPC(MuxPC), .PCout(PC));
+    PC PC0 (.clk(clk), .clr(clr), .newPC(newPC), .PCout(PC));
 
     Adder_32 Add (.a(PCout), .b(32'h4), .sub(), .sum(PCinc), .overflow(), .zeroflag());
 
