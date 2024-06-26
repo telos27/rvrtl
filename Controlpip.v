@@ -1,33 +1,26 @@
-
-module Controlpip (clk, clr, opcode,
-    ALUSrc, Branch, MemWrite, MemtoReg, RegWrite
+//流水线控制
+module Controlpip (
+    opcode,
+    PCSrc,
+    RegWrite,
+    ALUSrc, AddSrc,
+    Branch, MemWrite, MemRead,
+    MemtoReg
 );
-    input clk, clr;
     input [6:0] opcode;
-    output AluSrc, Branch, MemWrite, MemtoReg, RegWrite;
+    output ALUSrc, AddSrc;
+    output Branch, MemWrite, MemRead;
+    output MemtoReg, RegWrite;
 
-    reg [1:0] state;
+    assign ALUSrc = !clr & !(opcode == 7'b0110011);
 
-    always @(posedge clk) begin
-        if (clr) begin
-            state <= 0;
-        end
-        case (state)
-            0: state <= 1;
-            1: state <= 2;
-            2: state <= 3;
-            3: state <= 4;
-            4: state <= 0;
-        endcase
-    end
+    assign AddSrc = !clr & ((opcode == 7'b1101111) | (opcode == 7'b1100111));
 
-    assign ALUSrc = ;
+    assign Branch = !clr & (opcode == 7'b1100011);
 
-    assign Branch = ;
+    assign MemWrite = !clr & (opcode == 7'b0100011);
 
-    assign MemWrite = ;
-    
-    assign MemtoReg = ;
+    assign MemtoReg = !clr & (opcode == 7'b0000011);
 
-    assign RegWrite = ;
+    assign RegWrite = !clr & ((opcode == 7'b0110011) | (opcode == 7'b0010011) | (opcode == 7'b0000011));
 endmodule

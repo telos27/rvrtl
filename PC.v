@@ -1,6 +1,5 @@
 module PC (clk, clr, newPC, PCout);
     input clk , clr;
-    input PCWrite;
     input [31:0] newPC;
     output reg [31:0] PCout;
 

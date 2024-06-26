@@ -9,15 +9,15 @@ module Register (clk, write, rd, rs1, rs2, rddata, rs1data, rs2data);
 
     integer i ;
 
-    initial begin
-        for (i=0 ; i<32 ; i++) begin
-            x[i] = 0 ;
-        end
-    end
-
     always @(posedge clk) begin
+        if (clr) begin
+            for (i=0 ; i<32 ; i++) begin
+                x[i] = 0;
+            end
+        end
         if (write) begin
-            x[rd] <= rddata;
+            x[rd] = rddata;
+            x[0] = 32'b0;
         end
         else begin
             rs1data <= x[rs1];
