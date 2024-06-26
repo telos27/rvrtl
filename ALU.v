@@ -5,15 +5,15 @@
 `include "Reverser.v"
 `include "Shifter_32.v"
 `include "SignExtender.v"
-module ALU (clr, rs1, rs2, func7, func3, result, compare);
+module ALU (clr, rs1, rs2, func7, func3, result, flag);
     input [31:0] rs1, rs2;
     input clr;
     input [6:0] func7;
     input [2:0] func3;
-    output reg [31:0]result;
-    output reg [2:0]compare;
-    wire [31:0]rs2bar, muxrs2, sum, muxshift, shift;
-    wire [31:0]shiftdatatemp, shiftdataout, shiftright, signextend;
+    output reg [31:0] result;
+    output reg [2:0] flag;
+    wire [31:0] rs2bar, muxrs2, sum, muxshift, shift;
+    wire [31:0] shiftdatatemp, shiftdataout, shiftright, signextend;
     wire overflow, zeroflag, slt;
     //rs2取反
     assign rs2bar = ~rs2;
@@ -37,13 +37,13 @@ module ALU (clr, rs1, rs2, func7, func3, result, compare);
             0: result <= sum;//算数结果
             1: result <= shiftdataout;//左移
             2: result <= slt?32'b1:32'b0;//小于置1
-            3: result <= !overflow?32'b1:32'b0;//无符号小于置1
+            3: result <= overflow?32'b1:32'b0;//无符号小于置1
             4: result <= rs1 ^ rs2;//逻辑异或
             5: result <= shiftright | signextend;//右移
             6: result <= rs1 | rs2;//逻辑或
             7: result <= rs1 & rs2;//逻辑与
         endcase
         //rs1和rs2比较大小，设置标志位
-        compare = {!overflow, slt, zeroflag};//零标志位、有符号溢出、无符号溢出
+        flag = {overflow, slt, zeroflag};//零标志位、有符号溢出、无符号溢出
     end
 endmodule
