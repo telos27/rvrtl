@@ -14,7 +14,7 @@ module ALU (clr, rs1, rs2, func7, func3, result, flag);
     output reg [2:0] flag;
     wire [31:0] rs2bar, muxrs2, sum, muxshift, shift;
     wire [31:0] shiftdatatemp, shiftdataout, shiftright, signextend;
-    wire overflow, zeroflag, slt;
+    wire overflow, zeroflag;
     //rs2取反
     assign rs2bar = ~rs2;
     Mux_2_32 Mux_b (.select(func7[5]), .datain0(rs2), .datain1(rs2bar), .dataout(muxrs2));
@@ -26,8 +26,8 @@ module ALU (clr, rs1, rs2, func7, func3, result, flag);
     Shifter_32 Shifter (.shift(shift), .datain(shiftdatatemp), .dataout(shiftdataout));
     Reverser ReverserOut (.right(func3[2]), .datain(shiftdataout), .dataout(shiftright));
     SignExtender SignExtender (.shift5(rs2[4:0]), .rsa(func7[5]), .sign(rs1[31]), .signextend(signextend));
-    //小于置1
-    assign slt = (rs1[31]===rs2[31])^overflow;
+    // //小于置1
+    // assign slt = (rs1[31]===rs2[31])^overflow;
     //ALU输出
     always @(*) begin
         if (clr) begin
@@ -36,14 +36,14 @@ module ALU (clr, rs1, rs2, func7, func3, result, flag);
         case (func3)
             0: result <= sum;//算数结果
             1: result <= shiftdataout;//左移
-            2: result <= slt?32'b1:32'b0;//小于置1
+            2: result <= (sum[31]^overflow)?32'b1:32'b0;//小于置1
             3: result <= overflow?32'b1:32'b0;//无符号小于置1
             4: result <= rs1 ^ rs2;//逻辑异或
             5: result <= shiftright | signextend;//右移
             6: result <= rs1 | rs2;//逻辑或
             7: result <= rs1 & rs2;//逻辑与
         endcase
-        //rs1和rs2比较大小，设置标志位
-        flag = {overflow, slt, zeroflag};//零标志位、有符号溢出、无符号溢出
+        //设置标志位
+        flag <= {overflow, sum[31], zeroflag};//零标志位、有符号溢出、无符号溢出
     end
 endmodule

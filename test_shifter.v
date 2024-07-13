@@ -33,8 +33,8 @@ initial begin
       shift_data = 32'h8fff_ffff;
       a = shift_data;
       b = i;
-      right = 1;
-      sra = 1;
+      right = 0;
+      sra = 0;
       #10; // 延时使模块稳定
 
       // 预期输出
