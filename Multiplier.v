@@ -2,7 +2,6 @@
 `include "BoothEncode.v"
 `include "GenProd.v"
 `include "FA.v"
-`include "Adder_32.v"
 module Multiplier (a, b, sign, prod, overflow);
     input [31:0] a, b;
     input sign;//有符号、无符号控制信号
