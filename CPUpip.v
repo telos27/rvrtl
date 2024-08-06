@@ -5,7 +5,7 @@
 `include "MEM.v"
 `include "WB.v"
 `include "Controlpip.v"
-//`include "Fowarding.v"
+`include "Fowarding.v"
 module CPUpip (
     clk, clr
 );
@@ -58,35 +58,51 @@ module CPUpip (
         .RegWrite   (RegWrite)          //output，寄存器写控制
     );
     //译码、执行
-    reg [31:0]  ID_EX_rs1, ID_EX_rs2, ID_EX_imm;
+    reg [31:0]  ID_EX_rs1data, ID_EX_rs2data, ID_EX_imm;
     reg [6:0]   ID_EX_func7, ID_EX_Control;
     reg [2:0]   ID_EX_func3;
-    reg [4:0]   ID_EX_rd;
+    reg [4:0]   ID_EX_rd, ID_EX_rs1, ID_EX_rs2;
     always @(posedge clk) begin
-        ID_EX_rs1       <= rs1data;
-        ID_EX_rs2       <= rs2data;
+        ID_EX_rs1data   <= rs1data;
+        ID_EX_rs2data   <= rs2data;
         ID_EX_imm       <= immediate;
         ID_EX_func7     <= func7;
         ID_EX_func3     <= func3;
         ID_EX_rd        <= IF_ID_Ins[11:7];
         ID_EX_Control   <= {RegWrite, MemtoReg, MemRead, MemWrite, Branch, ALUSrc};
+        ID_EX_rs1       <= IF_ID_Ins[19:15];
+        ID_EX_rs2       <= IF_ID_Ins[24:20];
     end
     //执行
     wire [31:0] ALUresult;
     wire        BranchALU;
     EX EX (
-        .clk(clk), .clr(clr),           //input ，时钟、清零
-        .ALUSrc     (ID_EX_Control[0]), //input ，ALU_rs2选择
-        .rs1        (ID_EX_rs1),        //input ，ALU_rs1数据
-        .rs2        (ID_EX_rs2),        //input ，ALU_rs2数据
-        .immediate  (ID_EX_imm),        //input ，立即数
-        .func7      (ID_EX_func7),      //input ，指令func7字段
-        .func3      (ID_EX_func3),      //input ，指令func3字段
-        .ALUresult  (ALUresult),        //output，ALU计算结果
-        .BranchALU  (BranchALU)         //output，ALU分支条件
+        .clk(clk), .clr(clr),               //input ，时钟、清零
+        .ALUSrc         (ID_EX_Control[0]), //input ，ALU_rs2选择
+        .WriteRegister  (WriteRegister),    //input ，写回阶段写入寄存器数据
+        .priorALUresult (EX_MEM_ALUresult), //input ，先前指令的ALU结果
+        .ForwardA       (ForwardA),         //input ，rs1输入转发控制信号
+        .ForwardB       (ForwardB),         //input ，rs2输入转发控制信号
+        .rs1data        (ID_EX_rs1data),    //input ，ALU_rs1数据
+        .rs2data        (ID_EX_rs2data),    //input ，ALU_rs2数据
+        .immediate      (ID_EX_imm),        //input ，立即数
+        .func7          (ID_EX_func7),      //input ，指令func7字段
+        .func3          (ID_EX_func3),      //input ，指令func3字段
+        .ALUresult      (ALUresult),        //output，ALU计算结果
+        .BranchALU      (BranchALU)         //output，ALU分支条件
     );
-    //转发
-    //Forwarding Forwarding ();
+    //转发单元
+    wire ForwardA, ForwardB;
+    Forwarding Forwarding (
+        .EX_MEM_RegWrite(EX_MEM_Control[4]),    //input ，执行、访存阶段寄存器写入控制信号
+        .MEM_WB_RegWrite(MEM_WB_Control[1]),    //input ，访存、写回阶段寄存器写入控制信号
+        .EX_MEM_rd(EX_MEM_rd),                  //input ，执行、访存阶段写入目标寄存器编号
+        .MEM_WB_rd(MEM_WB_rd),                  //input ，访存、写回阶段写入目标寄存器编号
+        .ID_EX_rs1(ID_EX_rs1),                  //input ，译码、执行阶段rs1寄存器编号
+        .ID_EX_rs2(ID_EX_rs2),                  //input ，译码、执行阶段rs2寄存器编号
+        .ForwardA(ForwardA),                    //output，rs1输入转发控制信号
+        .ForwardB(ForwardB)                     //output，rs2输入转发控制信号
+    );
     //执行、访存
     reg [31:0]  EX_MEM_ALUresult, EX_MEM_rs2;
     reg [2:0]   EX_MEM_BranchALU;

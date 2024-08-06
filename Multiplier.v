@@ -51,9 +51,9 @@ module Multiplier (a, b, sign, prod, overflow);
     //Wallace树
     //第零层
     wire [38:0] a00, b00, c00, s00, co00;
-    assign a00 = {3'b0, neg[0], ~neg[0], ~neg[0], pt[0],neg[0]};
-    assign b00 = {3'b1, ~neg[1], pt[1], 1'b0, neg[1]};
-    assign c00 = {1'b1, neg[2], pt[2], 1'b0, pt[2][31], 2'b0};
+    assign a00 = {3'b0, neg[0], 2{~neg[0]}, pt[0]};
+    assign b00 = {2'b0, 1'b1, ~neg[1], pt[1], 1'b0, neg[0]};
+    assign c00 = {1'b1, neg[2], pt[2], 1'b0, neg[1], 2'b0};
     genvar i0;
     generate
         for (i0=0 ; i0<39 ; i0=i0+1) begin
@@ -61,9 +61,9 @@ module Multiplier (a, b, sign, prod, overflow);
         end
     endgenerate
     wire [40:0] a01, b01, c01, s01, co01;
-    assign a01 = {5'b1, neg[3], pt[3], 1'b0, neg[3]};
-    assign b01 = {3'b1, neg[4], pt[4], 1'b0, neg[4], 2'b0};
-    assign c01 = {1'b1, neg[5], pt[5], 1'b0, neg[5], 4'b0};
+    assign a01 = {4'b0, 1'b1, neg[3], pt[3], 1'b0, neg[2]};
+    assign b01 = {2'b0, 1'b1, neg[4], pt[4], 1'b0, neg[3], 2'b0};
+    assign c01 = {1'b1, neg[5], pt[5], 1'b0, neg[4], 4'b0};
     genvar i1;
     generate
         for (i1=0 ; i1<41 ; i1=i1+1) begin
@@ -71,9 +71,9 @@ module Multiplier (a, b, sign, prod, overflow);
         end
     endgenerate
     wire [40:0] a02, b02, c02, s02, co02;
-    assign a02 = {5'b1, neg[6], pt[6], 1'b0, neg[6]};
-    assign b02 = {3'b1, neg[7], pt[7], 1'b0, neg[7], 2'b0};
-    assign c02 = {1'b1, neg[8], pt[8], 1'b0, neg[8], 4'b0};
+    assign a02 = {4'b0, 1'b1, neg[6], pt[6], 1'b0, neg[5]};
+    assign b02 = {2'b0, 1'b1, neg[7], pt[7], 1'b0, neg[6], 2'b0};
+    assign c02 = {1'b1, neg[8], pt[8], 1'b0, neg[7], 4'b0};
     genvar i2;
     generate
         for (i2=0 ; i2<41 ; i2=i2+1) begin
@@ -81,8 +81,8 @@ module Multiplier (a, b, sign, prod, overflow);
         end
     endgenerate
     wire [40:0] a03, b03, c03, s03, co03;
-    assign a03 = {5'b1, neg[9], pt[9], 1'b0, neg[9]};
-    assign b03 = {3'b1, neg[10], pt[10], 1'b0, neg[10], 2'b0};
+    assign a03 = {4'b0, 1'b1, neg[9], pt[9], 1'b0, neg[9]};
+    assign b03 = {2'b0, 1'b1, neg[10], pt[10], 1'b0, neg[10], 2'b0};
     assign c03 = {1'b1, neg[11], pt[11], 1'b0, neg[11], 4'b0};
     genvar i3;
     generate
@@ -134,7 +134,7 @@ module Multiplier (a, b, sign, prod, overflow);
     wire [40:0] a13, b13, c13, s13, co13;
     assign a13 = co04;
     assign b13 = {neg[15], pt[15], 1'b0, neg[15], 5'b0};
-    assign c13 = {pt[16], 1'b0, neg[16], 6'b0};//第17行部分积，无符号为booth编码，有符号为0
+    assign c13 = sign ? {33'b0, neg[16], 6'b0} : {pt[16], 1'b0, neg[16], 6'b0};
     genvar j3;
     generate
         for (j3=0 ; j3<41 ; j3=j3+1) begin
