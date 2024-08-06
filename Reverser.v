@@ -1,7 +1,8 @@
 module Reverser (right, datain, dataout);
-    input right;
-    input [31:0] datain;
-    output reg [31:0] dataout;
+    input               right;
+    input       [31:0]  datain;
+    output reg  [31:0]  dataout;
+    
     integer i;
     always @(*) begin
         if (right) begin

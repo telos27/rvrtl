@@ -3,7 +3,6 @@
 `include "Adder_32.v"
 `include "Shift_Signal.v"
 `include "Reverser.v"
-`include "Shifter_32.v"
 `include "SignExtender.v"
 `include "Multiplier.v"
 module ALU (clr, rs1, rs2, func7, func3, result, BranchALU);
@@ -23,8 +22,9 @@ module ALU (clr, rs1, rs2, func7, func3, result, BranchALU);
     Adder_32 Adder (.a(rs1), .b(muxrs2), .sub(func7[5]), .sum(sum), .overflow(overflow), .zero(zero));
     //乘法器
     Multiplier Multiplier (.a(rs1), .b(rs2), .sign(func3[1]), .prod(product), .overflow());
+    //除法器
+    //Division Division (.a(rs1), .b(rs2), .sign(), .q(), .r());
     //移位模块
-    Shift_Signal Shift_Signal (.shift5(rs2[4:0]), .shift32(shift));
     Reverser ReverserIn (.right(func3[2]), .datain(rs1), .dataout(shiftdatatemp));
     Shifter_32 Shifter (.shift(shift), .datain(shiftdatatemp), .dataout(shiftdataout));
     Reverser ReverserOut (.right(func3[2]), .datain(shiftdataout), .dataout(shiftright));
@@ -33,7 +33,7 @@ module ALU (clr, rs1, rs2, func7, func3, result, BranchALU);
     //ALU输出
     always @(*) begin
         if (clr) begin
-            result <= 0;
+            result <= 32'b0;
         end
         case (func3)
             0: result <= sum;                       //算数结果
@@ -44,6 +44,7 @@ module ALU (clr, rs1, rs2, func7, func3, result, BranchALU);
             5: result <= shiftright | signextend;   //右移
             6: result <= rs1 | rs2;                 //逻辑或
             7: result <= rs1 & rs2;                 //逻辑与
+            default: result <= 32'b0;
         endcase
         //设置标志位
         BranchALU <=  ((func3==0) & zero)       //等于0
