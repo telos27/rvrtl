@@ -51,7 +51,7 @@ module Multiplier (a, b, sign, prod, overflow);
     //Wallace树
     //第零层
     wire [38:0] a00, b00, c00, s00, co00;
-    assign a00 = {3'b0, neg[0], 2{~neg[0]}, pt[0]};
+    assign a00 = {3'b0, neg[0], {~neg[0]}, {~neg[0]}, pt[0]};
     assign b00 = {2'b0, 1'b1, ~neg[1], pt[1], 1'b0, neg[0]};
     assign c00 = {1'b1, neg[2], pt[2], 1'b0, neg[1], 2'b0};
     genvar i0;
