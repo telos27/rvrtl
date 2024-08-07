@@ -23,7 +23,7 @@ initial begin
     // 测试
     for (i = 0; i < 32; i = i + 1) begin
       // 输入到模块的测试信号
-      shift_data = 32'ha5a5_a5a5;
+      shift_data = 32'hffff_ffff;
       a = shift_data;
       b = i;
       right = 1;

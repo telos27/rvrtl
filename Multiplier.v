@@ -8,21 +8,23 @@ module Multiplier (a, b, sign, prod, overflow);
     output [63:0] prod;
     output overflow;
 
-    wire [16:0] neg, zero, one;
+    wire [16:0] neg;
+    wire [16:0] zero;
+    wire [16:0] one;
     wire [15:0] two;
     wire [16:0][32:0] pt;
 
     //17个booth编码
-    BoothEncode BoothEncode0 (.code({b[1:0],1'b0}), .neg(neg[0]), .zero(zero[0]), .one(one[0]), .two(two[0]));
-    BoothEncode BoothEncode1 (.code(b[3:1]), .neg(neg[1]), .zero(zero[1]), .one(one[1]), .two(two[1]));
-    BoothEncode BoothEncode2 (.code(b[5:3]), .neg(neg[2]), .zero(zero[2]), .one(one[2]), .two(two[2]));
-    BoothEncode BoothEncode3 (.code(b[7:5]), .neg(neg[3]), .zero(zero[3]), .one(one[3]), .two(two[3]));
-    BoothEncode BoothEncode4 (.code(b[9:7]), .neg(neg[4]), .zero(zero[4]), .one(one[4]), .two(two[4]));
-    BoothEncode BoothEncode5 (.code(b[11:9]), .neg(neg[5]), .zero(zero[5]), .one(one[5]), .two(two[5]));
-    BoothEncode BoothEncode6 (.code(b[13:11]), .neg(neg[6]), .zero(zero[6]), .one(one[6]), .two(two[6]));
-    BoothEncode BoothEncode7 (.code(b[15:13]), .neg(neg[7]), .zero(zero[7]), .one(one[7]), .two(two[7]));
-    BoothEncode BoothEncode8 (.code(b[17:15]), .neg(neg[8]), .zero(zero[8]), .one(one[8]), .two(two[8]));
-    BoothEncode BoothEncode9 (.code(b[19:17]), .neg(neg[9]), .zero(zero[9]), .one(one[9]), .two(two[9]));
+    BoothEncode BoothEncode0  (.code({b[1:0],1'b0}), .neg(neg[0]), .zero(zero[0]), .one(one[0]), .two(two[0]));
+    BoothEncode BoothEncode1  (.code(b[3:1]),   .neg(neg[1]),  .zero(zero[1]),  .one(one[1]),  .two(two[1]));
+    BoothEncode BoothEncode2  (.code(b[5:3]),   .neg(neg[2]),  .zero(zero[2]),  .one(one[2]),  .two(two[2]));
+    BoothEncode BoothEncode3  (.code(b[7:5]),   .neg(neg[3]),  .zero(zero[3]),  .one(one[3]),  .two(two[3]));
+    BoothEncode BoothEncode4  (.code(b[9:7]),   .neg(neg[4]),  .zero(zero[4]),  .one(one[4]),  .two(two[4]));
+    BoothEncode BoothEncode5  (.code(b[11:9]),  .neg(neg[5]),  .zero(zero[5]),  .one(one[5]),  .two(two[5]));
+    BoothEncode BoothEncode6  (.code(b[13:11]), .neg(neg[6]),  .zero(zero[6]),  .one(one[6]),  .two(two[6]));
+    BoothEncode BoothEncode7  (.code(b[15:13]), .neg(neg[7]),  .zero(zero[7]),  .one(one[7]),  .two(two[7]));
+    BoothEncode BoothEncode8  (.code(b[17:15]), .neg(neg[8]),  .zero(zero[8]),  .one(one[8]),  .two(two[8]));
+    BoothEncode BoothEncode9  (.code(b[19:17]), .neg(neg[9]),  .zero(zero[9]),  .one(one[9]),  .two(two[9]));
     BoothEncode BoothEncode10 (.code(b[21:19]), .neg(neg[10]), .zero(zero[10]), .one(one[10]), .two(two[10]));
     BoothEncode BoothEncode11 (.code(b[23:21]), .neg(neg[11]), .zero(zero[11]), .one(one[11]), .two(two[11]));
     BoothEncode BoothEncode12 (.code(b[25:23]), .neg(neg[12]), .zero(zero[12]), .one(one[12]), .two(two[12]));
@@ -31,16 +33,16 @@ module Multiplier (a, b, sign, prod, overflow);
     BoothEncode BoothEncode15 (.code(b[31:29]), .neg(neg[15]), .zero(zero[15]), .one(one[15]), .two(two[15]));
     BoothEncode BoothEncode16 (.code({2'b0,b[31]}), .neg(neg[16]), .zero(zero[16]), .one(one[16]), .two());
     //部分积生成
-    GenProd GenProd0 (.a(a), .neg(neg[0]), .zero(zero[0]), .one(one[0]), .two(two[0]), .prod(pt[0]));
-    GenProd GenProd1 (.a(a), .neg(neg[1]), .zero(zero[1]), .one(one[1]), .two(two[1]), .prod(pt[1]));
-    GenProd GenProd2 (.a(a), .neg(neg[2]), .zero(zero[2]), .one(one[2]), .two(two[2]), .prod(pt[2]));
-    GenProd GenProd3 (.a(a), .neg(neg[3]), .zero(zero[3]), .one(one[3]), .two(two[3]), .prod(pt[3]));
-    GenProd GenProd4 (.a(a), .neg(neg[4]), .zero(zero[4]), .one(one[4]), .two(two[4]), .prod(pt[4]));
-    GenProd GenProd5 (.a(a), .neg(neg[5]), .zero(zero[5]), .one(one[5]), .two(two[5]), .prod(pt[5]));
-    GenProd GenProd6 (.a(a), .neg(neg[6]), .zero(zero[6]), .one(one[6]), .two(two[6]), .prod(pt[6]));
-    GenProd GenProd7 (.a(a), .neg(neg[7]), .zero(zero[7]), .one(one[7]), .two(two[7]), .prod(pt[7]));
-    GenProd GenProd8 (.a(a), .neg(neg[8]), .zero(zero[8]), .one(one[8]), .two(two[8]), .prod(pt[8]));
-    GenProd GenProd9 (.a(a), .neg(neg[9]), .zero(zero[9]), .one(one[9]), .two(two[9]), .prod(pt[9]));
+    GenProd GenProd0  (.a(a), .neg(neg[0]),  .zero(zero[0]),  .one(one[0]),  .two(two[0]),  .prod(pt[0]));
+    GenProd GenProd1  (.a(a), .neg(neg[1]),  .zero(zero[1]),  .one(one[1]),  .two(two[1]),  .prod(pt[1]));
+    GenProd GenProd2  (.a(a), .neg(neg[2]),  .zero(zero[2]),  .one(one[2]),  .two(two[2]),  .prod(pt[2]));
+    GenProd GenProd3  (.a(a), .neg(neg[3]),  .zero(zero[3]),  .one(one[3]),  .two(two[3]),  .prod(pt[3]));
+    GenProd GenProd4  (.a(a), .neg(neg[4]),  .zero(zero[4]),  .one(one[4]),  .two(two[4]),  .prod(pt[4]));
+    GenProd GenProd5  (.a(a), .neg(neg[5]),  .zero(zero[5]),  .one(one[5]),  .two(two[5]),  .prod(pt[5]));
+    GenProd GenProd6  (.a(a), .neg(neg[6]),  .zero(zero[6]),  .one(one[6]),  .two(two[6]),  .prod(pt[6]));
+    GenProd GenProd7  (.a(a), .neg(neg[7]),  .zero(zero[7]),  .one(one[7]),  .two(two[7]),  .prod(pt[7]));
+    GenProd GenProd8  (.a(a), .neg(neg[8]),  .zero(zero[8]),  .one(one[8]),  .two(two[8]),  .prod(pt[8]));
+    GenProd GenProd9  (.a(a), .neg(neg[9]),  .zero(zero[9]),  .one(one[9]),  .two(two[9]),  .prod(pt[9]));
     GenProd GenProd10 (.a(a), .neg(neg[10]), .zero(zero[10]), .one(one[10]), .two(two[10]), .prod(pt[10]));
     GenProd GenProd11 (.a(a), .neg(neg[11]), .zero(zero[11]), .one(one[11]), .two(two[11]), .prod(pt[11]));
     GenProd GenProd12 (.a(a), .neg(neg[12]), .zero(zero[12]), .one(one[12]), .two(two[12]), .prod(pt[12]));
@@ -48,12 +50,15 @@ module Multiplier (a, b, sign, prod, overflow);
     GenProd GenProd14 (.a(a), .neg(neg[14]), .zero(zero[14]), .one(one[14]), .two(two[14]), .prod(pt[14]));
     GenProd GenProd15 (.a(a), .neg(neg[15]), .zero(zero[15]), .one(one[15]), .two(two[15]), .prod(pt[15]));
     GenProd GenProd16 (.a(a), .neg(neg[16]), .zero(zero[16]), .one(one[16]), .two(two[16]), .prod(pt[16]));
+    //符号扩展
+    wire [15:0] se;
+    assign se[15:0] = sign ? neg : ~(neg ^ b[31]);
     //Wallace树
     //第零层
     wire [38:0] a00, b00, c00, s00, co00;
-    assign a00 = {3'b0, neg[0], {~neg[0]}, {~neg[0]}, pt[0]};
-    assign b00 = {2'b0, 1'b1, ~neg[1], pt[1], 1'b0, neg[0]};
-    assign c00 = {1'b1, neg[2], pt[2], 1'b0, neg[1], 2'b0};
+    assign a00 = {3'b0, se[0], {~se[0]}, {~se[0]}, pt[0]};
+    assign b00 = {2'b0, 1'b1, ~se[1], pt[1], 1'b0, neg[0]};
+    assign c00 = {1'b1, se[2], pt[2], 1'b0, neg[1], 2'b0};
     genvar i0;
     generate
         for (i0=0 ; i0<39 ; i0=i0+1) begin
@@ -61,9 +66,9 @@ module Multiplier (a, b, sign, prod, overflow);
         end
     endgenerate
     wire [40:0] a01, b01, c01, s01, co01;
-    assign a01 = {4'b0, 1'b1, neg[3], pt[3], 1'b0, neg[2]};
-    assign b01 = {2'b0, 1'b1, neg[4], pt[4], 1'b0, neg[3], 2'b0};
-    assign c01 = {1'b1, neg[5], pt[5], 1'b0, neg[4], 4'b0};
+    assign a01 = {4'b0, 1'b1, se[3], pt[3], 1'b0, neg[2]};
+    assign b01 = {2'b0, 1'b1, se[4], pt[4], 1'b0, neg[3], 2'b0};
+    assign c01 = {1'b1, se[5], pt[5], 1'b0, neg[4], 4'b0};
     genvar i1;
     generate
         for (i1=0 ; i1<41 ; i1=i1+1) begin
@@ -71,9 +76,9 @@ module Multiplier (a, b, sign, prod, overflow);
         end
     endgenerate
     wire [40:0] a02, b02, c02, s02, co02;
-    assign a02 = {4'b0, 1'b1, neg[6], pt[6], 1'b0, neg[5]};
-    assign b02 = {2'b0, 1'b1, neg[7], pt[7], 1'b0, neg[6], 2'b0};
-    assign c02 = {1'b1, neg[8], pt[8], 1'b0, neg[7], 4'b0};
+    assign a02 = {4'b0, 1'b1, se[6], pt[6], 1'b0, neg[5]};
+    assign b02 = {2'b0, 1'b1, se[7], pt[7], 1'b0, neg[6], 2'b0};
+    assign c02 = {1'b1, se[8], pt[8], 1'b0, neg[7], 4'b0};
     genvar i2;
     generate
         for (i2=0 ; i2<41 ; i2=i2+1) begin
@@ -81,9 +86,9 @@ module Multiplier (a, b, sign, prod, overflow);
         end
     endgenerate
     wire [40:0] a03, b03, c03, s03, co03;
-    assign a03 = {4'b0, 1'b1, neg[9], pt[9], 1'b0, neg[9]};
-    assign b03 = {2'b0, 1'b1, neg[10], pt[10], 1'b0, neg[10], 2'b0};
-    assign c03 = {1'b1, neg[11], pt[11], 1'b0, neg[11], 4'b0};
+    assign a03 = {4'b0, 1'b1, se[9], pt[9], 1'b0, neg[8]};
+    assign b03 = {2'b0, 1'b1, se[10], pt[10], 1'b0, neg[9], 2'b0};
+    assign c03 = {1'b1, se[11], pt[11], 1'b0, neg[10], 4'b0};
     genvar i3;
     generate
         for (i3=0 ; i3<41 ; i3=i3+1) begin
@@ -91,9 +96,9 @@ module Multiplier (a, b, sign, prod, overflow);
         end
     endgenerate
     wire [40:0] a04, b04, c04, s04, co04;
-    assign a04 = {5'b1, neg[12], pt[12], 1'b0, neg[12]};
-    assign b04 = {3'b1, neg[13], pt[13], 1'b0, neg[13], 2'b0};
-    assign c04 = {1'b1, neg[14], pt[14], 1'b0, neg[14], 4'b0};
+    assign a04 = {5'b1, se[12], pt[12], 1'b0, neg[11]};
+    assign b04 = {3'b1, se[13], pt[13], 1'b0, neg[12], 2'b0};
+    assign c04 = {1'b1, se[14], pt[14], 1'b0, neg[13], 4'b0};
     genvar i4;
     generate
         for (i4=0 ; i4<41 ; i4=i4+1) begin
@@ -133,8 +138,8 @@ module Multiplier (a, b, sign, prod, overflow);
     endgenerate
     wire [40:0] a13, b13, c13, s13, co13;
     assign a13 = co04;
-    assign b13 = {neg[15], pt[15], 1'b0, neg[15], 5'b0};
-    assign c13 = sign ? {33'b0, neg[16], 6'b0} : {pt[16], 1'b0, neg[16], 6'b0};
+    assign b13 = {se[15], pt[15], 1'b0, neg[14], 5'b0};
+    assign c13 = sign ? {33'b0, se[16], 6'b0} : {pt[16], 1'b0, neg[15], 6'b0};
     genvar j3;
     generate
         for (j3=0 ; j3<41 ; j3=j3+1) begin
