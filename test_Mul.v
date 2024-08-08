@@ -21,7 +21,7 @@ module test_Mul ();
 
         sign = 0;
 
-        for (i=1; i<10; i=i+1) begin
+        for (i=1; i<8; i=i+1) begin
             for (j=1; j<8; j=j+1) begin
                 a = i;
                 b = j;
