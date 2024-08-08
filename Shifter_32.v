@@ -25,10 +25,12 @@ module Shifter_32 (shift5, datain, right, sra, dataout);
     wire    [7:0]   shiftdata6;
     wire    [7:0]   shiftdata7;
     wire    [7:0]   shiftdata8;
-
+    //右移全位反接
     Reverser ReverserIn (.right(right), .datain(datain), .dataout(shiftin));
     Reverser ReverserOut (.right(right), .datain(shiftout), .dataout(shiftouttemp));
+    //逻辑右移符号扩展
     SignExtender SignExtender (.shift32(shift32), .se(signextend));
+    //移位数据最终输出
     assign dataout = sra ? (shiftouttemp | signextend) : shiftouttemp;
 
     Decoder_5to32 Decoder_5to32 (.select(shift5), .out(shift32));

@@ -31,7 +31,22 @@ module Multiplier (a, b, sign, prod, overflow);
     endgenerate
     //符号扩展
     wire [15:0] se;
-    assign se[15:0] = sign ? ~neg : ~(neg ^ b[31]);
+    assign se[0]  = sign ? ~(neg[0] ^ b[31]) : neg[0];
+    assign se[1]  = sign ? ~(neg[1] ^ b[31]) : neg[1];
+    assign se[2]  = sign ? ~(neg[2] ^ b[31]) : neg[2];
+    assign se[3]  = sign ? ~(neg[3] ^ b[31]) : neg[3];
+    assign se[4]  = sign ? ~(neg[4] ^ b[31]) : neg[4];
+    assign se[5]  = sign ? ~(neg[5] ^ b[31]) : neg[5];
+    assign se[6]  = sign ? ~(neg[6] ^ b[31]) : neg[6];
+    assign se[7]  = sign ? ~(neg[7] ^ b[31]) : neg[7];
+    assign se[8]  = sign ? ~(neg[8] ^ b[31]) : neg[8];
+    assign se[9]  = sign ? ~(neg[9] ^ b[31]) : neg[9];
+    assign se[10] = sign ? ~(neg[10] ^ b[31]) : neg[10];
+    assign se[11] = sign ? ~(neg[11] ^ b[31]) : neg[11];
+    assign se[12] = sign ? ~(neg[12] ^ b[31]) : neg[12];
+    assign se[13] = sign ? ~(neg[13] ^ b[31]) : neg[13];
+    assign se[14] = sign ? ~(neg[14] ^ b[31]) : neg[14];
+    assign se[15] = sign ? ~(neg[15] ^ b[31]) : neg[15];
     //Wallace树
     //第0层
     wire [38:0] a00, b00, c00, s00, co00;
@@ -39,21 +54,21 @@ module Multiplier (a, b, sign, prod, overflow);
     wire [40:0] a02, b02, c02, s02, co02;
     wire [40:0] a03, b03, c03, s03, co03;
     wire [40:0] a04, b04, c04, s04, co04;
-    assign a00 = {3'b0,         se[0], ~se[0], ~se[0],  pt[0]};
-    assign b00 = {2'b0, 1'b1,   se[1],  pt[1],  1'b0,  ~se[0]};
-    assign c00 = {      1'b1,   se[2],  pt[2],  1'b0,  ~se[1],  2'b0};
-    assign a01 = {4'b0, 1'b1,   se[3],  pt[3],  1'b0,  ~se[2]};
-    assign b01 = {2'b0, 1'b1,   se[4],  pt[4],  1'b0,  ~se[3],  2'b0};
-    assign c01 = {      1'b1,   se[5],  pt[5],  1'b0,  ~se[4],  4'b0};
-    assign a02 = {4'b0, 1'b1,   se[6],  pt[6],  1'b0,  ~se[5]};
-    assign b02 = {2'b0, 1'b1,   se[7],  pt[7],  1'b0,  ~se[6],  2'b0};
-    assign c02 = {      1'b1,   se[8],  pt[8],  1'b0,  ~se[7],  4'b0};
-    assign a03 = {4'b0, 1'b1,   se[9],  pt[9],  1'b0,  ~se[8]};
-    assign b03 = {2'b0, 1'b1,   se[10], pt[10], 1'b0,  ~se[9],  2'b0};
-    assign c03 = {      1'b1,   se[11], pt[11], 1'b0,  ~se[10], 4'b0};
-    assign a04 = {4'b0, 1'b1,   se[12], pt[12], 1'b0,  ~se[11]};
-    assign b04 = {2'b0, 1'b1,   se[13], pt[13], 1'b0,  ~se[12], 2'b0};
-    assign c04 = {      1'b1,   se[14], pt[14], 1'b0,  ~se[13], 4'b0};
+    assign a00 = {3'b0,        ~se[0],  se[0],  se[0], pt[0]};
+    assign b00 = {2'b0, 1'b1,  ~se[1],  pt[1],  1'b0,  se[0]};
+    assign c00 = {      1'b1,  ~se[2],  pt[2],  1'b0,  se[1],  2'b0};
+    assign a01 = {4'b0, 1'b1,  ~se[3],  pt[3],  1'b0,  se[2]};
+    assign b01 = {2'b0, 1'b1,  ~se[4],  pt[4],  1'b0,  se[3],  2'b0};
+    assign c01 = {      1'b1,  ~se[5],  pt[5],  1'b0,  se[4],  4'b0};
+    assign a02 = {4'b0, 1'b1,  ~se[6],  pt[6],  1'b0,  se[5]};
+    assign b02 = {2'b0, 1'b1,  ~se[7],  pt[7],  1'b0,  se[6],  2'b0};
+    assign c02 = {      1'b1,  ~se[8],  pt[8],  1'b0,  se[7],  4'b0};
+    assign a03 = {4'b0, 1'b1,  ~se[9],  pt[9],  1'b0,  se[8]};
+    assign b03 = {2'b0, 1'b1,  ~se[10], pt[10], 1'b0,  se[9],  2'b0};
+    assign c03 = {      1'b1,  ~se[11], pt[11], 1'b0,  se[10], 4'b0};
+    assign a04 = {4'b0, 1'b1,  ~se[12], pt[12], 1'b0,  se[11]};
+    assign b04 = {2'b0, 1'b1,  ~se[13], pt[13], 1'b0,  se[12], 2'b0};
+    assign c04 = {      1'b1,  ~se[14], pt[14], 1'b0,  se[13], 4'b0};
     genvar i0, i1;
     generate
         for (i0=0 ; i0<39 ; i0=i0+1) begin
@@ -81,8 +96,8 @@ module Multiplier (a, b, sign, prod, overflow);
     assign b12 = {5'b0, co03, 1'b0};
     assign c12 = {s04, 6'b0};
     assign a13 = co04;
-    assign b13 = {se[15], pt[15], 1'b0, ~se[14], 5'b0};
-    assign c13 = sign ? {33'b0, ~se[16], 6'b0} : {pt[16], 1'b0, ~se[15], 6'b0};
+    assign b13 = {~se[15], pt[15], 1'b0, se[14], 5'b0};
+    assign c13 = sign ? {33'b0, se[15], 6'b0} : {pt[16], 1'b0, se[15], 6'b0};
     genvar j0, j1, j2;
     generate
         for (j0=0 ; j0<45 ; j0=j0+1) begin
