@@ -1,9 +1,9 @@
 //16位快速加法器
-module FastAdder_16 (a, b, cin, sum, cout, gin, pin, gout, pout);
-    input [15:0] a, b;
-    input cin, gin, pin;
+module FastAdder_16 (a, b, sum, cin, cout);
+    input  [15:0] a, b;
     output [15:0] sum;
-    output cout, gout, pout;
+    input  cin;
+    output cout;
     wire [15:0] g, p;
     wire [14:0] ctemp;
     
@@ -165,8 +165,4 @@ module FastAdder_16 (a, b, cin, sum, cout, gin, pin, gout, pout);
     assign sum[13] = a[13] ^ b[13] ^ ctemp[12];
     assign sum[14] = a[14] ^ b[14] ^ ctemp[13];
     assign sum[15] = a[15] ^ b[15] ^ ctemp[14];
-
-    //进位产生、传播信号输出
-    assign gout = g[15];
-    assign pout = p[15];
 endmodule
