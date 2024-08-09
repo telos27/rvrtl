@@ -19,14 +19,15 @@ module test_Mul ();
         $dumpfile ("test_Mul.vcd");
         $dumpvars (0 , test_Mul);
 
-        sign = 0;
+        sign = 1;
 
-        for (i=1; i<8; i=i+1) begin
-            for (j=1; j<8; j=j+1) begin
+        for (i=0; i<64; i=i+1) begin
+            for (j=0; j<64; j=j+1) begin
                 a = i;
                 b = j;
                 expected_product = i * j;
-                #5;
+
+                #5
 
                 if (prodl !== expected_product) begin
                     $display("错误 %h * %h = %h , expected = %h", i , j , prodl , expected_product);

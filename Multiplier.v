@@ -1,4 +1,4 @@
-//32位乘法器（4基booth）
+//32位乘法器（二阶booth、Wallace树）
 `include "BoothEncode.v"
 `include "GenProd.v"
 `include "FA.v"
@@ -14,7 +14,7 @@ module Multiplier (a, b, sign, prod, overflow);
     wire    [15:0]  two;
     wire    [16:0][32:0] pt;
     //17个booth编码
-    BoothEncode BoothEncode0  (.code({b[1:0],1'b0}), .neg(neg[0]), .zero(zero[0]), .one(one[0]), .two(two[0]));
+    BoothEncode BoothEncode0 (.code({b[1:0],1'b0}), .neg(neg[0]), .zero(zero[0]), .one(one[0]), .two(two[0]));
     genvar BE;
     generate
         for (BE=1; BE<16; BE = BE+1) begin
@@ -31,22 +31,7 @@ module Multiplier (a, b, sign, prod, overflow);
     endgenerate
     //符号扩展
     wire [15:0] se;
-    assign se[0]  = sign ? ~(neg[0] ^ b[31]) : neg[0];
-    assign se[1]  = sign ? ~(neg[1] ^ b[31]) : neg[1];
-    assign se[2]  = sign ? ~(neg[2] ^ b[31]) : neg[2];
-    assign se[3]  = sign ? ~(neg[3] ^ b[31]) : neg[3];
-    assign se[4]  = sign ? ~(neg[4] ^ b[31]) : neg[4];
-    assign se[5]  = sign ? ~(neg[5] ^ b[31]) : neg[5];
-    assign se[6]  = sign ? ~(neg[6] ^ b[31]) : neg[6];
-    assign se[7]  = sign ? ~(neg[7] ^ b[31]) : neg[7];
-    assign se[8]  = sign ? ~(neg[8] ^ b[31]) : neg[8];
-    assign se[9]  = sign ? ~(neg[9] ^ b[31]) : neg[9];
-    assign se[10] = sign ? ~(neg[10] ^ b[31]) : neg[10];
-    assign se[11] = sign ? ~(neg[11] ^ b[31]) : neg[11];
-    assign se[12] = sign ? ~(neg[12] ^ b[31]) : neg[12];
-    assign se[13] = sign ? ~(neg[13] ^ b[31]) : neg[13];
-    assign se[14] = sign ? ~(neg[14] ^ b[31]) : neg[14];
-    assign se[15] = sign ? ~(neg[15] ^ b[31]) : neg[15];
+    assign se  = sign ? (neg ^ a[31]) : neg;
     //Wallace树
     //第0层
     wire [38:0] a00, b00, c00, s00, co00;
@@ -115,7 +100,7 @@ module Multiplier (a, b, sign, prod, overflow);
     wire [51:0] a20, b20, c20, s20, co20;
     wire [57:0] a21, b21, c21, s21, co21;
     assign a20 = {7'b0, s10};
-    assign b20 = {6'b0, c10, 1'b0};
+    assign b20 = {6'b0, co10, 1'b0};
     assign c20 = {s11, 5'b0};
     assign a21 = {11'b0, co11};
     assign b21 = {1'b0, s12, 10'b0};
