@@ -33,7 +33,7 @@ module test_Mul ();
                     $display("错误 %h * %h = %h , expected = %h", i , j , prodl , expected_product);
                 end
                 else begin
-                    $display("%h*%h = %h , expected = %h", i , j , prodl , expected_product);
+                    $display("%h * %h = %h , expected = %h", i , j , prodl , expected_product);
                 end
             end
         end
