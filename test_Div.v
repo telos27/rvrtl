@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 `include "Divider.v"
-`include "FastAdder_16.v"
+`include "Adder_32.v"
 module test_Div ();
 
     Divider Div (.a(a), .b(b), .sign(sign), .quotient(quotient), .remainder(remainder));

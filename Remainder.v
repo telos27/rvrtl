@@ -1,15 +1,14 @@
 //除法器余数计算单元
-module Remainder (a, b, sub, remainder, quotient);
+module Remainder (a, b, remainder, quotient);
     input  [63:0] a;
     input  [63:0] b;
-    input  sub;
     output [63:0] remainder;
     output quotient;
 
     wire ctemp0, ctemp1, ctemp2;
     wire [63:0] remainder_temp;
 
-    FastAdder_16 FastAdder_16_0 (.a(a[15:0]),  .b(b[15:0]),  .cin(sub),
+    FastAdder_16 FastAdder_16_0 (.a(a[15:0]),  .b(b[15:0]),  .cin(1'b0),
                                 .sum(remainder_temp[15:0]),  .cout(ctemp0));
     FastAdder_16 FastAdder_16_1 (.a(a[31:16]), .b(b[31:16]), .cin(ctemp0),
                                 .sum(remainder_temp[31:16]), .cout(ctemp1));
