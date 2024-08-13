@@ -20,8 +20,8 @@ module test_FA32 ();
 
         sub = 0;
 
-        for (i=0; i<4294967295; i=i+1) begin
-            for (j=1; j<2; j=j+1) begin
+        for (i=0; i<999; i=i+1) begin
+            for (j=0; j<9; j=j+1) begin
                 a = i;
                 b = j;
                 expected_sum = i + j;
@@ -29,10 +29,10 @@ module test_FA32 ();
                 #5
 
                 if (sum !== expected_sum) begin
-                    $display("错误 %h * %h = %h , expected = %h", i , j , sum , expected_sum);
+                    $display("错误 %h + %h = %h , expected = %h", i , j , sum , expected_sum);
                 end
                 else begin
-                    $display("%h*%h = %h , expected = %h", i , j , sum , expected_sum);
+                    $display("%h + %h = %h , expected = %h", i , j , sum , expected_sum);
                 end
             end
         end

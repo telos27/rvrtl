@@ -8,7 +8,7 @@ module Multiplier (a, b, sign, prod, overflow);
     output  [63:0]  prod;
     output          overflow;
 
-    wire    [16:0]  neg;
+    wire    [15:0]  neg;
     wire    [16:0]  zero;
     wire    [16:0]  one;
     wire    [15:0]  two;
@@ -21,17 +21,18 @@ module Multiplier (a, b, sign, prod, overflow);
             BoothEncode BoothEn (.code(b[BE*2+1:BE*2-1]), .neg(neg[BE]), .zero(zero[BE]), .one(one[BE]), .two(two[BE]));
         end
     endgenerate
-    BoothEncode BoothEncode16 (.code({2'b0,b[31]}), .neg(neg[16]), .zero(zero[16]), .one(one[16]), .two());
+    BoothEncode BoothEncode16 (.code({2'b0,b[31]}), .neg(), .zero(zero[16]), .one(one[16]), .two());
     //部分积生成
     genvar GP;
     generate
-        for (GP=0; GP<17; GP=GP+1) begin
+        for (GP=0; GP<16; GP=GP+1) begin
             GenProd GenProdi (.a(a), .neg(neg[GP]),  .zero(zero[GP]),  .one(one[GP]),  .two(two[GP]),  .prod(pt[GP]));
         end
     endgenerate
+    GenProd GenProd (.a(a), .neg(1'b0),  .zero(zero[16]),  .one(one[16]),  .two(),  .prod(pt[16]));
     //符号扩展
     wire [15:0] se;
-    assign se  = sign ? (neg ^ a[31]) : neg;
+    assign se  = sign ? neg ^ a[31] : neg;
     //Wallace树
     //第0层
     wire [38:0] a00, b00, c00, s00, co00;
@@ -40,20 +41,20 @@ module Multiplier (a, b, sign, prod, overflow);
     wire [40:0] a03, b03, c03, s03, co03;
     wire [40:0] a04, b04, c04, s04, co04;
     assign a00 = {3'b0,        ~se[0],  se[0],  se[0], pt[0]};
-    assign b00 = {2'b0, 1'b1,  ~se[1],  pt[1],  1'b0,  se[0]};
-    assign c00 = {      1'b1,  ~se[2],  pt[2],  1'b0,  se[1],  2'b0};
-    assign a01 = {4'b0, 1'b1,  ~se[3],  pt[3],  1'b0,  se[2]};
-    assign b01 = {2'b0, 1'b1,  ~se[4],  pt[4],  1'b0,  se[3],  2'b0};
-    assign c01 = {      1'b1,  ~se[5],  pt[5],  1'b0,  se[4],  4'b0};
-    assign a02 = {4'b0, 1'b1,  ~se[6],  pt[6],  1'b0,  se[5]};
-    assign b02 = {2'b0, 1'b1,  ~se[7],  pt[7],  1'b0,  se[6],  2'b0};
-    assign c02 = {      1'b1,  ~se[8],  pt[8],  1'b0,  se[7],  4'b0};
-    assign a03 = {4'b0, 1'b1,  ~se[9],  pt[9],  1'b0,  se[8]};
-    assign b03 = {2'b0, 1'b1,  ~se[10], pt[10], 1'b0,  se[9],  2'b0};
-    assign c03 = {      1'b1,  ~se[11], pt[11], 1'b0,  se[10], 4'b0};
-    assign a04 = {4'b0, 1'b1,  ~se[12], pt[12], 1'b0,  se[11]};
-    assign b04 = {2'b0, 1'b1,  ~se[13], pt[13], 1'b0,  se[12], 2'b0};
-    assign c04 = {      1'b1,  ~se[14], pt[14], 1'b0,  se[13], 4'b0};
+    assign b00 = {2'b0, 1'b1,  ~se[1],  pt[1],  1'b0,  neg[0]};
+    assign c00 = {      1'b1,  ~se[2],  pt[2],  1'b0,  neg[1],  2'b0};
+    assign a01 = {4'b0, 1'b1,  ~se[3],  pt[3],  1'b0,  neg[2]};
+    assign b01 = {2'b0, 1'b1,  ~se[4],  pt[4],  1'b0,  neg[3],  2'b0};
+    assign c01 = {      1'b1,  ~se[5],  pt[5],  1'b0,  neg[4],  4'b0};
+    assign a02 = {4'b0, 1'b1,  ~se[6],  pt[6],  1'b0,  neg[5]};
+    assign b02 = {2'b0, 1'b1,  ~se[7],  pt[7],  1'b0,  neg[6],  2'b0};
+    assign c02 = {      1'b1,  ~se[8],  pt[8],  1'b0,  neg[7],  4'b0};
+    assign a03 = {4'b0, 1'b1,  ~se[9],  pt[9],  1'b0,  neg[8]};
+    assign b03 = {2'b0, 1'b1,  ~se[10], pt[10], 1'b0,  neg[9],  2'b0};
+    assign c03 = {      1'b1,  ~se[11], pt[11], 1'b0,  neg[10], 4'b0};
+    assign a04 = {4'b0, 1'b1,  ~se[12], pt[12], 1'b0,  neg[11]};
+    assign b04 = {2'b0, 1'b1,  ~se[13], pt[13], 1'b0,  neg[12], 2'b0};
+    assign c04 = {      1'b1,  ~se[14], pt[14], 1'b0,  neg[13], 4'b0};
     genvar i0, i1;
     generate
         for (i0=0 ; i0<39 ; i0=i0+1) begin
@@ -73,16 +74,16 @@ module Multiplier (a, b, sign, prod, overflow);
     wire [40:0] a13, b13, c13, s13, co13;
     assign a10 = {6'b0, s00};
     assign b10 = {5'b0, co00, 1'b0};
-    assign c10 = {s01, 4'b0};
+    assign c10 = {      s01,  4'b0};
     assign a11 = {6'b0, co01};
-    assign b11 = {1'b0, s02, 5'b0};
-    assign c11 = {co02, 6'b0};
+    assign b11 = {1'b0, s02,  5'b0};
+    assign c11 = {      co02, 6'b0};
     assign a12 = {6'b0, s03};
     assign b12 = {5'b0, co03, 1'b0};
-    assign c12 = {s04, 6'b0};
+    assign c12 = {      s04,  6'b0};
     assign a13 = co04;
-    assign b13 = {~se[15], pt[15], 1'b0, se[14], 5'b0};
-    assign c13 = sign ? {33'b0, se[15], 6'b0} : {pt[16], 1'b0, se[15], 6'b0};
+    assign b13 = {~se[15], pt[15], 1'b0, neg[14], 5'b0};
+    assign c13 = sign ? {33'b0, neg[15], 7'b0} : {pt[16][31:0], 1'b0, neg[15], 7'b0};
     genvar j0, j1, j2;
     generate
         for (j0=0 ; j0<45 ; j0=j0+1) begin
@@ -128,7 +129,7 @@ module Multiplier (a, b, sign, prod, overflow);
         for (l0=0 ; l0<64 ; l0=l0+1) begin
             FA FA30 (.a(a30[l0]), .b(b30[l0]), .ci(c30[l0]), .s(s30[l0]), .co(co30[l0]));
         end
-        for (l1=0 ; l1<57 ; l1=l1+1) begin
+        for (l1=0 ; l1<58 ; l1=l1+1) begin
             FA FA31 (.a(a31[l1]), .b(b31[l1]), .ci(c31[l1]), .s(s31[l1]), .co(co31[l1]));
         end
     endgenerate
@@ -155,7 +156,10 @@ module Multiplier (a, b, sign, prod, overflow);
         end
     endgenerate
     //第六层
-    wire prodlo;
-    Adder_32 prodl (.a(s50[31:0]), .b({co50[30:0], 1'b0}), .sub(1'b0), .sum(prod[31:0]), .overflow(prodlo), .zeroflag());
-    Adder_32 prodh (.a(s50[63:32]), .b(co50[62:31]), .sub(1'b0), .sum(prod[63:32]), .overflow(overflow), .zeroflag());
+    wire [63:0] b6;
+    wire ctemp0, ctemp1;
+    assign b6 = {co50[62:0], 1'b0};
+    assign ctemp1 = sign ? 1'b0 : ctemp0;
+    Adder_32 prodl (.a(s50[31:0]), .b(b6[31:0]), .sub(1'b0), .sum(prod[31:0]), .overflow(ctemp0), .zeroflag());
+    Adder_32 prodh (.a(s50[63:32]), .b(b6[63:32]), .sub(ctemp1), .sum(prod[63:32]), .overflow(overflow), .zeroflag());
 endmodule
