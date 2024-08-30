@@ -9,5 +9,5 @@ module WB (
 
     output [31:0] Writeregister;
 
-    assign WriteRegister = MemtoReg ? ALUresult : Readdata;
+    assign WriteRegister = MemtoReg ? Readdata : ALUresult;
 endmodule

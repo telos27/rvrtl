@@ -1,5 +1,5 @@
-module PC (clk, clr, nextPC, PCout);
-    input clk , clr;
+module PC (clk, clr, PCWrite, nextPC, PCout);
+    input clk , clr, PCWrite;
     input [31:0] nextPC;
     output reg [31:0] PCout;
 
@@ -7,7 +7,7 @@ module PC (clk, clr, nextPC, PCout);
         if (clr) begin 
             PCout <= 32'b0;
         end 
-        else begin
+        if (PCWrite) begin
             PCout <= nextPC;
         end
     end

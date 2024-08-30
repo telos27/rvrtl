@@ -1,15 +1,9 @@
 //流水线控制
-module Controlpip (
-    clr,
-    opcode,
-    ALUSrc, AddSrc,
-    Branch, MemWrite, MemRead,
-    MemtoReg, RegWrite
-);
+module Controlpip (clr, opcode, AddSrc, Branch, Jump, ALUSrc, MemWrite, MemRead, MemtoReg, RegWrite);
     input clr;
     input [6:0] opcode;
     
-    output ALUSrc, AddSrc;
+    output AddSrc, ALUSrc;
     output Branch, MemWrite, MemRead;
     output MemtoReg, RegWrite;
 
@@ -19,21 +13,19 @@ module Controlpip (
               jalr   = 7'b1100111, lui    = 7'b0110111,
               auipc  = 7'b0010111, system = 7'b1110011;
 
-    assign AddSrc   = !clr &  (opcode == jalr);     //地址计算立即数或寄存器选择
+    assign AddSrc   = !clr & (opcode == jalr);  //地址计算立即数或寄存器选择
 
-    assign ALUSrc   = !clr & !(opcode == ALUR);     //ALU rs2寄存器或立即数选择
+    assign Branch   = !clr & (opcode == branch);   //分支指令控制
 
-    assign Branch   = !clr &  ((opcode == branch)
-                             | (opcode == jal)
-                             | (opcode == jalr));   //分支指令控制
+    assign Jump     = !clr & ((opcode == jal) | (opcode == jalr));  //跳转指令控制
 
-    assign MemWrite = !clr &  (opcode == store);    //内存写控制
+    assign ALUSrc   = !clr &!(opcode == ALUR);  //ALU rs2寄存器或立即数选择
 
-    assign MemRead  = !clr &  (opcode == load);     //内存读控制
+    assign MemWrite = !clr & (opcode == store); //内存写控制
 
-    assign MemtoReg = !clr &  (opcode == load);     //寄存器写 ALU 结果或内存数据选择
+    assign MemRead  = !clr & (opcode == load);  //内存读控制
 
-    assign RegWrite = !clr &  ((opcode == ALUR)
-                             | (opcode == ALUI)
-                             | (opcode == load));   //寄存器写控制
+    assign MemtoReg = !clr & (opcode == load);  //寄存器写 ALU 结果或内存数据选择
+
+    assign RegWrite = !clr & ((opcode == ALUR) | (opcode == ALUI) | (opcode == load));   //寄存器写控制
 endmodule
