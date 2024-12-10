@@ -78,7 +78,7 @@ module CPUpip (
         ID_EX_func7     <= IF_ID_Ins[14:12];
         ID_EX_func3     <= IF_ID_Ins[31:25];
         ID_EX_rd        <= IF_ID_Ins[11:7];
-        ID_EX_Control   <= ControlorNop; //RegWrite, MemtoReg, MemRead, MemWrite, ALUSrc
+        ID_EX_Control   <= ControlorNop;    //RegWrite, MemtoReg, MemRead, MemWrite, ALUSrc
         ID_EX_rs1       <= IF_ID_Ins[19:15];
         ID_EX_rs2       <= IF_ID_Ins[24:20];
     end
