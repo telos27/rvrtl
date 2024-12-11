@@ -1,9 +1,10 @@
 //1位半加器
-module HalfAdder_1 (a, b, sum, carry);
+module HA_1 (a, b, sum, carry);
     input a, b;
 
     output sum, carry;
 
     assign sum = a ^ b;
     assign carry = a & b;
+
 endmodule

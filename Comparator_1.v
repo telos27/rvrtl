@@ -1,10 +1,11 @@
 //1位比较器
-module Comparator_1 (a, b, less, equal, great);
+module Comparator_1 (a, b, great, equal, less);
     input a, b;
 
-    output less, equal, great;
+    output great, equal, less;
 
-    assign less = a & ~b;
+    assign great = a & ~b;
     assign equal = ~(a ^ b);
-    assign great = ~a & b;
+    assign less = ~a & b;
+
 endmodule
