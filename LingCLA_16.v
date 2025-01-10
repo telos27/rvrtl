@@ -1,12 +1,12 @@
-//具有成组进位产生/传播功能的16位成组先行进位部件
+//16位Ling进位加法器
 `include "LingBCLG_4.v"
-`include "BCLG_4.v"
+`include "CLG_4.v"
 
-module LingBCLG_16 (a, b, cin, sum, ggout, gtout);
+module LingCLA_16 (a, b, cin, sum, cout);
     input [15:0] a, b;
     input cin;
     output [15:0] sum;
-    output ggout, gtout;
+    output cout;
 
     wire [15:0] p, g, t;
     assign p = a ^ b;
@@ -25,7 +25,7 @@ module LingBCLG_16 (a, b, cin, sum, ggout, gtout);
     assign ggin[3:0] = gg[3:0] & {t[15], t[11], t[7], t[3]};
     assign gtin[3:0] = gt[3:0] & {t[15], t[11], t[7], t[3]};
 
-    BCLG_4 bclg (.g(ggin), .t(gtin), .cin(cin), .cout(c), .gg(ggout), .gt(gtout));
+    CLG_4 clg (.g(ggin), .t(gtin), .cin(cin), .cout({cout, c}));
 
     assign sum[0] = p[0] ^ cin;
     assign sum[3:1] = p[3:1] ^ h[2:0] & t[2:0];
