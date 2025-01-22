@@ -65,7 +65,7 @@ module CPUpip (
 
     //ID/EX，译码、执行流水线寄存器
     reg  [31:0] ID_EX_rs1data, ID_EX_rs2data, ID_EX_imm;
-    reg  [6:0]  ID_EX_func7
+    reg  [6:0]  ID_EX_func7;
     reg  [4:0]  ID_EX_Control;
     reg  [2:0]  ID_EX_func3;
     reg  [4:0]  ID_EX_rd, ID_EX_rs1, ID_EX_rs2;
@@ -117,7 +117,7 @@ module CPUpip (
     reg [31:0]  EX_MEM_ALUresult, EX_MEM_rs2;
     reg [4:0]   EX_MEM_rd;
     reg [3:0]   EX_MEM_Control;
-    reg [2:0]   EX_MEM_func3
+    reg [2:0]   EX_MEM_func3;
     always @(posedge clk) begin
         EX_MEM_ALUresult    <= ALUresult;
         EX_MEM_rs2          <= ID_EX_rs2;
@@ -136,7 +136,7 @@ module CPUpip (
         .priorMEMdata   (MEM_WB_Readdata),  //input ，先前指令的内存读取数据
         .ALUresult      (EX_MEM_ALUresult), //input ，ALU计算结果
         .rs2            (EX_MEM_rs2),       //input ，写内存数据
-        .readdata       (readdata)          //output，内存读数据
+        .readdata       (readdata),         //output，内存读数据
         .func3          (EX_MEM_func3)      //input ，指令func3字段
     );
 
@@ -156,7 +156,7 @@ module CPUpip (
     reg [1:0]   MEM_WB_Control; //RegWrite, MemtoReg
     always @(posedge clk) begin
         MEM_WB_ALUresult    <= EX_MEM_ALUresult;
-        MEM_WB_Readdata     <= Readdata;
+        MEM_WB_Readdata     <= readdata;
         MEM_WB_rd           <= EX_MEM_rd;
         MEM_WB_Control      <= EX_MEM_Control[3:2]; //RegWrite, MemtoReg
     end
